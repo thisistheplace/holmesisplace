@@ -31,9 +31,9 @@
 
     $(document).ready(function() {
         // rough spacing of trees
-        const scale = 500
+        const scale = 10
         // number of trees
-        var ntrees = 500
+        var ntrees = 5
         // array of indexes of trees
         const treeidx = Array.apply(null, {length: ntrees}).map(Number.call, Number)
         const growntree = []
@@ -55,6 +55,7 @@
             // grow a tree!
             createTree(allx[randomtree], 0.0, allz[randomtree])
         }
+        console.log(growntree)
     });
 
     function init() {
@@ -119,7 +120,7 @@
         var point2 = new THREE.Vector3(x, y + 5.0, z)
         var branch = cylinderMesh(point2, point1, material, 0.1, 0.1)
         scene.add(branch)
-        drawTree(x, y + 5.0, z, 360, 10, 1.0, 0.1, material)
+        drawTree(x, y + 5.0, z, 360, 8, 1.0, 0.1, material)
     }
 
 
@@ -164,6 +165,27 @@
         edge.position.x = (pointY.x + point1.x) / 2;
         edge.position.y = (pointY.y + point1.y) / 2;
         edge.position.z = (pointY.z + point1.z) / 2;
+        return edge;
+    }
+
+    function lineMesh(point1, pointY, material, diam1, diam2) {
+        // var direction = new THREE.Vector3().subVectors(pointY, point1);
+        // var orientation = new THREE.Matrix4();
+        // orientation.lookAt(point1, pointY, new THREE.Object3D().up);
+        // orientation.multiply(new THREE.Matrix4().set(1, 0, 0, 0,
+        //     0, 0, 1, 0,
+        //     0, -1, 0, 0,
+        //     0, 0, 0, 1));
+        var points = []
+        points.push(point1)
+        points.push(point2)
+        var edgeGeometry = new THREE.BufferGeometry().setFromPoints( points );
+        var edge = new THREE.Line(edgeGeometry, material);
+        // edge.applyMatrix4(orientation);
+        // position based on midpoints - there may be a better solution than this
+        // edge.position.x = (pointY.x + point1.x) / 2;
+        // edge.position.y = (pointY.y + point1.y) / 2;
+        // edge.position.z = (pointY.z + point1.z) / 2;
         return edge;
     }
 

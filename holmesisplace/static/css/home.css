@@ -1,6 +1,80 @@
-.mycanvas {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 1;
+html {
+  scroll-behavior: smooth;
+}
+
+.spotifysection {
+    height: 600px;
+    background-color: red;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.sectionheader {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: white;
+    font-family: Verdana;
+    height: 32px;
+    padding: 52px;
+}
+
+.spotifyholder {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.spotifyholder > iframe {
+    margin: 5px;
+}
+
+.videosection {
+    height: 600px;
+    background-color: orange;
+}
+
+.communitysection {
+    height: 600px;
+    background-color: green;
+}
+
+.librarysection {
+    height: 600px;
+    background-color: blue;
+}
+
+/* banner links */
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding-left: 14px;
+    padding-right: 16px;
+    padding-top: 10px;
+    text-decoration: none;
+    font-family: Verdana;
+    height: 32px;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #4CAF50;
 }

@@ -3,32 +3,76 @@
 <head>
     <link rel="stylesheet" href="/static/css/holmesisplace.css">
     <link rel="stylesheet" href="/static/css/socials.css">
-    <!-- Add icon library -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script src="/static/js/spin.js"></script>
+    <link rel="stylesheet" href="/static/css/spin.css">
     {% block sources %}{% endblock %}
 </head>
 <body>
-<!-- <h1>natalieholmes</h1> -->
-<div class="headbox">
-    <div class="header">
-        <div class="logobox">
-            <img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png">
+<div class="loader" id="loader">
+    <div id="spinnerbox"></div>
+</div>
+<div class="main" id="main">
+    <div class="headbox">
+        <div class="header">
+            <div class="logobox">
+                <img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png">
+            </div>
         </div>
     </div>
-</div>
-<div class="banner" id="banner">{% block banner %}{% endblock %}</div>
-<div class="content">{% block content %}{% endblock %}</div>
-<div class="socialbox">
-    <!-- Add font awesome icons -->
-    <a href="#" class="fa fa-facebook"></a>
-    <a href="#" class="fa fa-twitter"></a>
-    <a href="#" class="fa fa-youtube"></a>
-    <a href="#" class="fa fa-instagram"></a>
-    <a href="#" class="fa fa-tiktok"></a>
-    <a href="#" class="fa fa-twitch"></a>
-    <a href="#" class="fa fa-patreon"></a>
-    <a href="#" class="fa fa-spotify"></a>
-    <a href="#" class="fa fa-itunes"></a>
+    <div class="banner" id="banner">{% block banner %}{% endblock %}</div>
+    <div class="content">{% block content %}{% endblock %}</div>
+    <div class="socialbox">
+        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/be82b7a8-7fd0-4c22-9b78-8e43ec403980.png" class="socialicon" id="#facebook"></img>
+        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/5c883a1e-3d54-4a2a-9b90-4d7c156fa1c9.png" class="socialicon" id="#twitter"></img>
+        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/041c3d45-4e7d-42ed-9c78-46cc156752bc.png" class="socialicon" id="#instagram"></img>
+        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/1494fe60-4709-4f6e-b261-04c452fb9dbc.png" class="socialicon" id="#youtube"></img>
+        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/3e229f84-bc3b-4667-8a21-9f7f1b2f1ee8.png" class="socialicon" id="#soundcloud"></img>
+        <img src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/10344728-df61-4459-824b-a69ea839ddb3.png" class="socialicon" id="#patreon"></img>
+        <img src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/ccb567ba-cb1b-49ac-af69-5a1b1281b377.png" class="socialicon" id="#twitch"></img>
+        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/2b00b720-807b-4c69-9eef-55dcf6ebc15a.png" class="socialicon" id="#spotify"></img>
+        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/62fb1615-9f6a-42bf-a8d0-765f3c6255be.png" class="socialicon" id="#apple"></img>
+        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/9fbb34e5-61bf-4e7d-92ec-e26e5668aa8f.png" class="socialicon" id="#mail"></img>
+    </socialbox>
 </div>
 </body>
+<script type="text/javascript">
+    // run loading page until document is ready!
+    $(document).ready(function(){
+        // setup spinner immediately
+        var target = document.getElementById('spinnerbox');
+        var opts = {
+          lines: 13, // The number of lines to draw
+          length: 38, // The length of each line
+          width: 17, // The line thickness
+          radius: 45, // The radius of the inner circle
+          scale: 0.4, // Scales overall size of the spinner
+          corners: 1, // Corner roundness (0..1)
+          speed: 1, // Rounds per second
+          rotate: 0, // The rotation offset
+          animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
+          direction: 1, // 1: clockwise, -1: counterclockwise
+          color: '#ffffff', // CSS color or array of colors
+          fadeColor: 'transparent', // CSS color or array of colors
+          top: '50%', // Top position relative to parent
+          left: '50%', // Left position relative to parent
+          shadow: '0 0 1px transparent', // Box-shadow for the lines
+          zIndex: 2000000000, // The z-index (defaults to 2e9)
+          className: 'spinner', // The CSS class to assign to the spinner
+          position: 'absolute', // Element positioning
+        };
+        var spinner = new Spinner(opts).spin();
+        target.appendChild(spinner.el);
+        console.log(spinner)
+        window.onSpotifyWebPlaybackSDKReady = () => {
+          // console.log("The Web Playback SDK is ready. We have access to Spotify.Player");
+          // console.log(window.Spotify.Player);
+          // stop loader
+          // show body
+          $("body").css('position', 'absolute')
+          $("#loader").css('display', 'none')
+        };
+    });
+</script>
 </html>

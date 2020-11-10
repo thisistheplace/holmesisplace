@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block sources %}
+<link rel="stylesheet" href="/static/css/home.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<div id="top"></div>
+{% endblock %}
+{% block banner %}
+<ul>
+    <li><a href="#top">Home</a></li>
+    <li><a href="#spotifysection">Music</a></li>
+    <li><a href="#videosection">Video</a></li>
+    <li><a href="#communitysection">Community</a></li>
+    <li><a href="#librarysection">Library</a></li>
+    <li><a href="https://natalieholmes.bandcamp.com/">Store</a></li>
+</ul>
+{% endblock %}
+{% block content %}
+<div class="spotifysection" id="spotifysection">
+    <div class="sectionheader">music</div>
+    <div class="sectionholder">
+        <iframe class="spotifyframe" src="https://open.spotify.com/embed/album/7w32okyMeyUNdwdJY1Xj1G" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        <iframe class="spotifyframe" src="https://open.spotify.com/embed/playlist/0zhE19hfIbOAt1lty1HgNE" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        <iframe class="spotifyframe" src="https://open.spotify.com/embed/playlist/6TSliFziS3P8y4bAdkFWiR" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    </div>
+</div>
+<div class="videosection" id="videosection">
+    <div class="sectionheader">video</div>
+    <div class="sectionholder">
+        <iframe id="videoframe" width="720" height="405" src="https://www.youtube-nocookie.com/embed/videoseries?list=PLitPfbAIiH0Tfa4NK64r6qnSqvFNE_Nvl" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="sectionholder videoimgs">
+        <img src="https://img.youtube.com/vi/DSdoNhJCoKc/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube.com/embed/videoseries?list=PLitPfbAIiH0Tfa4NK64r6qnSqvFNE_Nvl')"></img>
+        <img src="https://img.youtube.com/vi/e4huiRiQ7Pc/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube-nocookie.com/embed/e4huiRiQ7Pc')"></img>
+        <img src="https://img.youtube.com/vi/D3bN7fTOicg/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube-nocookie.com/embed/D3bN7fTOicg')"></img>
+        <img src="https://img.youtube.com/vi/SLaX_KIIh98/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube-nocookie.com/embed/SLaX_KIIh98')"></img>
+    </div>
+</div>
+<div class="communitysection" id="communitysection">
+    <div class="sectionheader">community</div>
+</div>
+<div class="librarysection" id="librarysection">
+    <div class="sectionheader">library</div>
+</div>
+<script type="text/javascript">
+    function updatevideo(src) {
+        // get handle on iframe object
+        $('#videoframe').attr('src', src)
+    }
+</script>
+{% endblock %}

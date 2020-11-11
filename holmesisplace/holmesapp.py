@@ -46,7 +46,7 @@ app.config['SECRET_KEY'] = 'origami'
 def landing():
     return redirect(url_for('home'))
 
-@app.route('/home', methods=['GET'])
+@app.route('/natalieholmes', methods=['GET'])
 def home():
     if request.method == 'GET':
         # render template

@@ -53,17 +53,39 @@ html {
     backface-visibility: hidden;
 }
 
+.gridholder {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.grid {
+    padding: 20px;
+    width: 850px;
+}
+
+.grid-item {
+    width: 200px;
+    -webkit-transition: opacity .5s ease-in-out;
+    transition: opacity .5s ease-in-out;
+    opacity: 1;
+}
+
+.grid-item:hover {
+  opacity: 0.4;
+}
+
 .videoimg:hover {
   opacity: 0.4;
 }
 
 .communitysection {
-    height: 600px;
+    height: 400px;
     background-color: rgba(246, 252, 188, 0.3);
 }
 
 .librarysection {
-    height: 600px;
+    /* height: 600px; */
     background-color: rgba(214, 210, 251, 0.3);
 }
 

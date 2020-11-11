@@ -42,6 +42,10 @@ app = Flask(__name__, template_folder=template_folder, static_folder=static_fold
 app.config['SECRET_KEY'] = 'origami'
 
 # define app routes
+@app.route('/', methods=['GET'])
+def landing():
+    return redirect(url_for('home'))
+
 @app.route('/home', methods=['GET'])
 def home():
     if request.method == 'GET':

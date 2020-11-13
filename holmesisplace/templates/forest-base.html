@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/css/holmesisplace.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/static/js/spin.js"></script>
+    <link rel="stylesheet" href="/static/css/spin.css">
+    {% block sources %}{% endblock %}
+</head>
+<body>
+<div class="loader" id="loader">
+    <div id="spinnerbox"></div>
+</div>
+<div class="main" id="main">
+    <!-- <div class="headbox">
+        <div class="header">
+        </div>
+    </div> -->
+    <div class="banner" id="banner">{% block banner %}{% endblock %}</div>
+    <div class="content">{% block content %}{% endblock %}</div>
+</div>
+</body>
+<script type="text/javascript">
+    // run loading page until document is ready!
+    $(document).ready(function(){
+        // setup spinner immediately
+        var target = document.getElementById('spinnerbox');
+        var opts = {
+          lines: 13, // The number of lines to draw
+          length: 38, // The length of each line
+          width: 17, // The line thickness
+          radius: 45, // The radius of the inner circle
+          scale: 0.4, // Scales overall size of the spinner
+          corners: 1, // Corner roundness (0..1)
+          speed: 1, // Rounds per second
+          rotate: 0, // The rotation offset
+          animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
+          direction: 1, // 1: clockwise, -1: counterclockwise
+          color: '#ffffff', // CSS color or array of colors
+          fadeColor: 'transparent', // CSS color or array of colors
+          top: '50%', // Top position relative to parent
+          left: '50%', // Left position relative to parent
+          shadow: '0 0 1px transparent', // Box-shadow for the lines
+          zIndex: 2000000000, // The z-index (defaults to 2e9)
+          className: 'spinner', // The CSS class to assign to the spinner
+          position: 'absolute', // Element positioning
+        };
+        var spinner = new Spinner(opts).spin();
+        target.appendChild(spinner.el);
+        console.log(spinner)
+        $("body").css('position', 'absolute')
+        $("#loader").css('display', 'none')`
+    });
+</script>
+</html>

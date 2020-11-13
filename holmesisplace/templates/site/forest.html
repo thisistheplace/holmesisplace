@@ -53,7 +53,7 @@
             // store tree index that has been grown
             growntree.push(randomtree)
             // grow a tree!
-            createTree(allx[randomtree], 0.0, allz[randomtree])
+            createTree(allx[randomtree] * -1.0, 0.0, allz[randomtree] * -1.0)
         }
         console.log(growntree)
     });

@@ -103,11 +103,11 @@
         // for the sphere this needs to be at least 90
         const scale = 45;
         // number of trees
-        var ntrees = 5000;
+        var ntrees = 3000;
         // initial tree height
         var height = 6
         // initial tree diameter
-        var diameter = 0.3
+        var diameter = 0.5
         // forest depth
         const depth = 7;
         // outer radius of sphere
@@ -236,8 +236,8 @@
       if (depth > 0){
         var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
         angle = angle * plusOrMinus
-        var x2 = x1 + (Math.cos(Math.random() * angle * Math.PI / 180) * ((depth - 1) / depth) * length);
-        var z2 = z1 + (Math.sin(Math.random() * angle * Math.PI / 180) * ((depth - 1) / depth) * length);
+        var x2 = x1 + (Math.cos((Math.random() + Math.random()) * angle * Math.PI / 180) * ((depth - 1) / depth) * length);
+        var z2 = z1 + (Math.sin((Math.random() + Math.random()) * angle * Math.PI / 180) * ((depth - 1) / depth) * length);
         var y2 = y1 + (0.5 * Math.random() * depth * length)
         var point1 = new THREE.Vector3(x1, y1, z1)
         var point2 = new THREE.Vector3(x2, y2, z2)

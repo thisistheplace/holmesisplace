@@ -44,8 +44,8 @@
 
     const stopcamera = false;
     const scene = new THREE.Scene();
-    const axesHelper = new THREE.AxesHelper( 5 );
-    scene.add( axesHelper );
+    // const axesHelper = new THREE.AxesHelper( 5 );
+    // scene.add( axesHelper );
     scene.background = new THREE.Color( 0xffffff );
     const [camera, renderer] = init();
     const controls = createControls(camera, renderer)
@@ -97,7 +97,7 @@
         // for number of random trees
         const nforests = 4;
         // rough spacing of trees
-        const scale = 1000;
+        const scale = 2000;
         // number of trees
         var ntrees = 2000
         // initial height
@@ -178,7 +178,7 @@
         var geoms = []
         geoms.push(trunkgeom)
         // create branches
-        await drawTree(x, y + height, z, 360, 8, height, diam, material, mygroup)
+        await drawTree(x, y + height, z, 360, 7, height, diam, material, mygroup)
         // now group everything
         for (var i=0; i < mygroup.children.length; i++){
             // get branch mesh

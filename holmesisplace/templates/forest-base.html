@@ -21,6 +21,9 @@
 </div>
 </body>
 <script type="text/javascript">
+    // $(document).ready(function(){
+    //     $("#loader").css('display', 'none')
+    // });
     // run loading page until document is ready!
     $(document).ready(function(){
         // setup spinner immediately
@@ -47,9 +50,13 @@
         };
         var spinner = new Spinner(opts).spin();
         target.appendChild(spinner.el);
-        console.log(spinner)
-        $("body").css('position', 'absolute')
-        $("#loader").css('display', 'none')`
+        // await sleep(100000)
+        // $("body").css('position', 'absolute')
+        $("#loader").css('display', 'none')
     });
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 </script>
 </html>

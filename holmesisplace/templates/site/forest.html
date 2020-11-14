@@ -13,12 +13,16 @@
     uniform mat4 projectionMatrix;
     attribute vec3 position;
     attribute vec3 offset;
+    attribute vec4 quaternion;
 
-    varying vec3 vUv;
+    // function to apply quaternion to instanced geometry
+    vec3 applyQuaternionToVector( vec4 q, vec3 v ){
+        return v + 2.0 * cross( q.xyz, cross( q.xyz, v ) + q.w * v );
+    }
 
     void main() {
-      vUv = position;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4( offset + position, 1.0 );
+      vec3 newposition = applyQuaternionToVector(quaternion, position);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( offset + newposition, 1.0 );
     }
 </script>
 
@@ -44,31 +48,31 @@
 
     const stopcamera = false;
     const scene = new THREE.Scene();
+    const theforest = new THREE.Group()
     // const axesHelper = new THREE.AxesHelper( 5 );
     // scene.add( axesHelper );
     scene.background = new THREE.Color( 0xffffff );
     const [camera, renderer] = init();
     const controls = createControls(camera, renderer)
     // camera.up.set(0, 1, 0);
-    camera.lookAt(-10, 5, -10);
+    camera.lookAt(0, 0, 0);
     animate();
 
     $(document).ready(function() {
+        // add forest
         growforest();
     });
 
     function init() {
 
         const camera = new THREE.PerspectiveCamera( 80, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 3000 );
-        camera.position.x = 10;
+        camera.position.x = 700;
         camera.position.y = 0;
-        camera.position.z = 10;
+        camera.position.z = 700;
         // camera.position.y = 50;
         // camera.position.x = 1000;
 
-        const parameters = [[ 0.25, 0xff7700, 1 ], [ 0.5, 0xff9900, 1 ], [ 0.75, 0xffaa00, 0.75 ], [ 1, 0xffaa00, 0.5 ], [ 1.25, 0x000833, 0.8 ],
-            [ 3.0, 0xaaaaaa, 0.75 ], [ 3.5, 0xffffff, 0.5 ], [ 4.5, 0xffffff, 0.25 ], [ 5.5, 0xffffff, 0.125 ]];
-
+        // define renderer
         const renderer = new THREE.WebGLRenderer( { antialias: true, canvas: mycanvas } );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
@@ -83,36 +87,45 @@
 
     function createControls( camera, renderer) {
 
+        // create orbiting controls
         var controls = new OrbitControls( camera, renderer.domElement );
-
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 1.2;
         controls.panSpeed = 0.8;
-
         controls.keys = [ 65, 83, 68 ];
         return controls
     }
 
     async function growforest(){
         // for number of random trees
-        const nforests = 4;
+        const nforests = 1;
         // rough spacing of trees
-        const scale = 2000;
+        // for the sphere this needs to be at least 90
+        const scale = 45;
         // number of trees
-        var ntrees = 2000
-        // initial height
-        var height = 10
-        // initial diameter
-        var diameter = 0.5
+        var ntrees = 5000;
+        // initial tree height
+        var height = 6
+        // initial tree diameter
+        var diameter = 0.3
+        // forest depth
+        const depth = 7;
+        // outer radius of sphere
+        var sphere_radius = 500;
+        // add sphere
+        const geometry = new THREE.SphereGeometry( sphere_radius, 100, 100 );
+        const sphere_material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+        const globe = new THREE.Mesh( geometry, sphere_material );
+        scene.add( globe );
         // array of indexes of trees
-        const treeidx = Array.apply(null, {length: ntrees * 2}).map(Number.call, Number)
+        const treeidx = Array.apply(null, {length: ntrees * nforests}).map(Number.call, Number)
         // holder to make sure we don't grow a tree which already exists!
         const growntree = []
         // array of x's
-        const randx = Array.apply(null, {length: ntrees}).map(Function.call, Math.random)
+        const randx = Array.apply(null, {length: ntrees * nforests}).map(Function.call, Math.random)
         const allx = randx.map(x => x * scale * (Math.random() < 0.5 ? -1 : 1))
         // array of z's
-        const randz = Array.apply(null, {length: ntrees}).map(Function.call, Math.random)
+        const randz = Array.apply(null, {length: ntrees * nforests}).map(Function.call, Math.random)
         const allz = randz.map(z => z * scale * (Math.random() < 0.5 ? -1 : 1))
         // standard material, just used for mesh generation
         const material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.8} );
@@ -126,7 +139,7 @@
         // loop through groups of random trees
         for (let iforest=0; iforest < nforests; iforest++){
             // grow a tree at the origin!
-            var mothertree = await createTree(0.0, 0.0, 0.0, height, diameter, material)
+            var mothertree = await createTree(0.0, 0.0, 0.0, height, diameter, depth, material)
             // create instance buffer geometry
             var forest = new THREE.InstancedBufferGeometry();
             forest.copy(mothertree)
@@ -134,32 +147,53 @@
             forest.instanceCount = ntrees
             // create buffer attribute arrays
             // these needs to be an offset array
-            var offsets = new Float32Array(ntrees * 3) // two trees in forest
+            // these will be applied by the renderer on the GPU
+            var offsets = new Float32Array(ntrees * 3)
+            // also quaternions stores quaternions per instance
+            // these will be applied by the renderer on the GPU
+            var quaternions = new Float32Array(ntrees * 4)
             for (var i=0; i<ntrees; i++){
                 // get random x position
                 var randomtree = treeidx[Math.floor(Math.random() * treeidx.length)];
-                // while (growntree.includes(randomtree)){
-                //     randomtree = treeidx[Math.floor(Math.random() * treeidx.length)];
-                // }
-                // store tree index that has been grown
+                // store tree position that has been grown, i.e. the instance
                 growntree.push(randomtree)
+                // spherical positioning
+                var spherepos = new THREE.Spherical( sphere_radius, allx[randomtree], allz[randomtree] )
+                var spherecoords = new THREE.Vector3()
+                spherecoords.setFromSpherical(spherepos)
+                // calculate angle betwen vertical vector and vector from center
+                // of sphere to base
+                // get unit vector to tree base on sphere
+                var unittree = new THREE.Vector3()
+                unittree.setFromSpherical(spherepos)
+                unittree.normalize()
+                // make quaternion defining rotation
+                var rot = new THREE.Quaternion();
+                rot.setFromUnitVectors(new THREE.Vector3(0, 1, 0), unittree)
+                // store in rotation matrix
+                quaternions[i * 3] = rot.x
+                quaternions[i * 3 + 1] = rot.y
+                quaternions[i * 3 + 2] = rot.z
+                quaternions[i * 3 + 3] = rot.w
                 // generate offset coordinates
-                offsets[i * 3] = allx[randomtree] * -1.0
-                offsets[i * 3 + 1] = 0.0
-                offsets[i * 3 + 2] = allz[randomtree] * -1.0
-                // colors
-                // colors.push( Math.random(), Math.random(), Math.random(), Math.random() );
+                offsets[i * 3] = spherecoords.x
+                offsets[i * 3 + 1] = spherecoords.y
+                offsets[i * 3 + 2] = spherecoords.z
             }
             // apply offsets to instanced geometry
             forest.setAttribute( 'offset', new THREE.InstancedBufferAttribute( offsets, 3 ) );
+            forest.setAttribute( 'quaternion', new THREE.InstancedBufferAttribute( quaternions, 3 ) );
             // create forest mesh
             var forestmesh = await new THREE.Mesh(forest, mat);
             forestmesh.updateMatrix()
-            scene.add(forestmesh);
+            // add to group
+            theforest.add(forestmesh);
         };
+        // add group to scene
+        scene.add(theforest)
     };
 
-    async function createTree(x, y, z, height, diam, material){
+    async function createTree(x, y, z, height, diam, depth, material){
         // creates a random tree
         // then instances it to array
         // first create group gridholder
@@ -178,7 +212,7 @@
         var geoms = []
         geoms.push(trunkgeom)
         // create branches
-        await drawTree(x, y + height, z, 360, 7, height, diam, material, mygroup)
+        await drawTree(x, y + height, z, 360, depth, height, diam, material, mygroup)
         // now group everything
         for (var i=0; i < mygroup.children.length; i++){
             // get branch mesh
@@ -262,13 +296,8 @@
     }
 
     function animate() {
-        // if (camera.position.y < 100 && stopcamera == false){
-        //     camera.position.y += 0.1
-        //     camera.position.x += 5
-        // } else if (camera.position.y < 50) {
-        //     stopcamera == true;
-        // }
-        // camera.position.x = 50;
+        theforest.rotation.z += 0.005;
+        theforest.rotation.y += 0.002;
         requestAnimationFrame( animate );
         controls.update();
         renderer.render( scene, camera );

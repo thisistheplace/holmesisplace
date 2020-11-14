@@ -6,11 +6,33 @@
 {% block content %}
 <canvas class="mycanvas" id="mycanvas">
 </canvas>
+
+<script type='x-shader/x-vertex' id='vertexShader'>
+    precision highp float;
+    uniform mat4 modelViewMatrix;
+    uniform mat4 projectionMatrix;
+    attribute vec3 position;
+    attribute vec3 offset;
+
+    varying vec3 vUv;
+
+    void main() {
+      vUv = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( offset + position, 1.0 );
+    }
+</script>
+
+<script type='x-shader/x-fragment' id='fragmentShader'>
+    precision highp float;
+    void main() {
+      gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    }
+</script>
+
 <script type="module">
-
-    import * as THREE from 'https://unpkg.com/three@0.119.0/build/three.module.js';
-    import { OrbitControls } from 'https://unpkg.com/three@0.119.0/examples/jsm/controls/OrbitControls.js';
-
+    import * as THREE from '/static/three/build/three.module.js';
+    import { OrbitControls } from '/static/three/examples/jsm/controls/OrbitControls.js';
+    import { BufferGeometryUtils } from '/static/three/examples/jsm/utils/BufferGeometryUtils.js';
     var canvas = document.getElementById('mycanvas');
     const SCREEN_WIDTH = canvas.getBoundingClientRect().width;
     const SCREEN_HEIGHT = canvas.getBoundingClientRect().height;
@@ -22,70 +44,30 @@
 
     const stopcamera = false;
     const scene = new THREE.Scene();
+    const axesHelper = new THREE.AxesHelper( 5 );
+    scene.add( axesHelper );
     scene.background = new THREE.Color( 0xffffff );
     const [camera, renderer] = init();
     const controls = createControls(camera, renderer)
     // camera.up.set(0, 1, 0);
-    camera.lookAt(0, 50, 0);
+    camera.lookAt(-10, 5, -10);
     animate();
 
     $(document).ready(function() {
-        // rough spacing of trees
-        const scale = 10
-        // number of trees
-        var ntrees = 5
-        // array of indexes of trees
-        const treeidx = Array.apply(null, {length: ntrees}).map(Number.call, Number)
-        const growntree = []
-        // array of x's
-        const randx = Array.apply(null, {length: ntrees}).map(Function.call, Math.random)
-        const allx = randx.map(x => x * scale)
-        // array of z's
-        const randz = Array.apply(null, {length: ntrees}).map(Function.call, Math.random)
-        const allz = randz.map(z => z * scale)
-        // create trees in a loop
-        for (var i=0; i<ntrees; i++){
-            // get random x position
-            var randomtree = treeidx[Math.floor(Math.random() * treeidx.length)];
-            while (growntree.includes(randomtree)){
-                randomtree = treeidx[Math.floor(Math.random() * treeidx.length)];
-            }
-            // store tree index that has been grown
-            growntree.push(randomtree)
-            // grow a tree!
-            createTree(allx[randomtree] * -1.0, 0.0, allz[randomtree] * -1.0)
-        }
-        console.log(growntree)
+        growforest();
     });
 
     function init() {
 
         const camera = new THREE.PerspectiveCamera( 80, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 3000 );
-        camera.position.x = 50;
+        camera.position.x = 10;
+        camera.position.y = 0;
+        camera.position.z = 10;
         // camera.position.y = 50;
         // camera.position.x = 1000;
 
         const parameters = [[ 0.25, 0xff7700, 1 ], [ 0.5, 0xff9900, 1 ], [ 0.75, 0xffaa00, 0.75 ], [ 1, 0xffaa00, 0.5 ], [ 1.25, 0x000833, 0.8 ],
             [ 3.0, 0xaaaaaa, 0.75 ], [ 3.5, 0xffffff, 0.5 ], [ 4.5, 0xffffff, 0.25 ], [ 5.5, 0xffffff, 0.125 ]];
-
-        // const geometry = createGeometry();
-
-        // for ( let i = 0; i < parameters.length; ++ i ) {
-        //
-        //     const p = parameters[ i ];
-        //
-        //     const material = new THREE.LineBasicMaterial( { color: p[ 1 ], opacity: p[ 2 ] } );
-        //
-        //     const line = new THREE.LineSegments( geometry, material );
-        //     line.scale.x = line.scale.y = line.scale.z = p[ 0 ];
-        //     line.userData.originalScale = p[ 0 ];
-        //     line.rotation.y = Math.random() * Math.PI;
-        //     line.updateMatrix();
-        //     scene.add( line );
-        //
-        // }
-
-        // createTree()
 
         const renderer = new THREE.WebGLRenderer( { antialias: true, canvas: mycanvas } );
         renderer.setPixelRatio( window.devicePixelRatio );
@@ -94,9 +76,6 @@
 
         document.body.style.touchAction = 'none';
         // document.body.addEventListener( 'pointermove', onPointerMove, false );
-
-        //
-
         window.addEventListener( 'resize', onWindowResize, false );
 
         return [camera, renderer]
@@ -114,25 +93,115 @@
         return controls
     }
 
-    function createTree(x, y, z){
-        const material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.8 } );
+    async function growforest(){
+        // for number of random trees
+        const nforests = 4;
+        // rough spacing of trees
+        const scale = 1000;
+        // number of trees
+        var ntrees = 2000
+        // initial height
+        var height = 10
+        // initial diameter
+        var diameter = 0.5
+        // array of indexes of trees
+        const treeidx = Array.apply(null, {length: ntrees * 2}).map(Number.call, Number)
+        // holder to make sure we don't grow a tree which already exists!
+        const growntree = []
+        // array of x's
+        const randx = Array.apply(null, {length: ntrees}).map(Function.call, Math.random)
+        const allx = randx.map(x => x * scale * (Math.random() < 0.5 ? -1 : 1))
+        // array of z's
+        const randz = Array.apply(null, {length: ntrees}).map(Function.call, Math.random)
+        const allz = randz.map(z => z * scale * (Math.random() < 0.5 ? -1 : 1))
+        // standard material, just used for mesh generation
+        const material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.8} );
+        // instanced material!
+        var mat = new THREE.RawShaderMaterial({
+          uniforms: {},
+          vertexShader: document.getElementById( 'vertexShader' ).textContent,
+          fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+          transparent: false
+        });
+        // loop through groups of random trees
+        for (let iforest=0; iforest < nforests; iforest++){
+            // grow a tree at the origin!
+            var mothertree = await createTree(0.0, 0.0, 0.0, height, diameter, material)
+            // create instance buffer geometry
+            var forest = new THREE.InstancedBufferGeometry();
+            forest.copy(mothertree)
+            // set number of instances
+            forest.instanceCount = ntrees
+            // create buffer attribute arrays
+            // these needs to be an offset array
+            var offsets = new Float32Array(ntrees * 3) // two trees in forest
+            for (var i=0; i<ntrees; i++){
+                // get random x position
+                var randomtree = treeidx[Math.floor(Math.random() * treeidx.length)];
+                // while (growntree.includes(randomtree)){
+                //     randomtree = treeidx[Math.floor(Math.random() * treeidx.length)];
+                // }
+                // store tree index that has been grown
+                growntree.push(randomtree)
+                // generate offset coordinates
+                offsets[i * 3] = allx[randomtree] * -1.0
+                offsets[i * 3 + 1] = 0.0
+                offsets[i * 3 + 2] = allz[randomtree] * -1.0
+                // colors
+                // colors.push( Math.random(), Math.random(), Math.random(), Math.random() );
+            }
+            // apply offsets to instanced geometry
+            forest.setAttribute( 'offset', new THREE.InstancedBufferAttribute( offsets, 3 ) );
+            // create forest mesh
+            var forestmesh = await new THREE.Mesh(forest, mat);
+            forestmesh.updateMatrix()
+            scene.add(forestmesh);
+        };
+    };
+
+    async function createTree(x, y, z, height, diam, material){
+        // creates a random tree
+        // then instances it to array
+        // first create group gridholder
+        let mygroup = new THREE.Group()
         var point1 = new THREE.Vector3(x, y, z)
-        var point2 = new THREE.Vector3(x, y + 5.0, z)
-        var branch = cylinderMesh(point2, point1, material, 0.1, 0.1)
-        scene.add(branch)
-        drawTree(x, y + 5.0, z, 360, 8, 1.0, 0.1, material)
+        var point2 = new THREE.Vector3(x, y + height, z)
+        var trunk = cylinderMesh(point2, point1, material, diam, diam)
+        // var trunk = lineMesh(point2, point1, material, 0.1, 0.1)
+        // make sure matrix is up to date
+        trunk.updateMatrix()
+        // get geometry
+        var trunkgeom = trunk.geometry
+        // update branch geometry with mesh matrix
+        trunkgeom.applyMatrix4(trunk.matrix)
+        // create holder for all branches
+        var geoms = []
+        geoms.push(trunkgeom)
+        // create branches
+        await drawTree(x, y + height, z, 360, 8, height, diam, material, mygroup)
+        // now group everything
+        for (var i=0; i < mygroup.children.length; i++){
+            // get branch mesh
+            var thisbranch = mygroup.children[i]
+            // make sure matrix is up to date
+            thisbranch.updateMatrix()
+            // get geometry
+            var geom = thisbranch.geometry
+            // apply mesh matrix to geometry to position properly
+            geom.applyMatrix4(thisbranch.matrix)
+            geoms.push(geom)
+        };
+        // make a single geometry from all
+        var singletree = BufferGeometryUtils.mergeBufferGeometries(geoms, false)
+        return singletree
     }
 
 
-    async function drawTree(x1, y1, z1, angle, depth, length, diam, material){
-      await sleep(20)
+    async function drawTree(x1, y1, z1, angle, depth, length, diam, material, mygroup){
+      // await sleep(20)
       if (depth > 0){
         var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
         angle = angle * plusOrMinus
-
-        // var x2 = x1 + (Math.cos(angle * Math.PI / 180) * ((depth - 1) / depth) * length);
-        // var z2 = z1 + (Math.sin(-angle * Math.PI / 180) * ((depth - 1) / depth) * length);
-
         var x2 = x1 + (Math.cos(Math.random() * angle * Math.PI / 180) * ((depth - 1) / depth) * length);
         var z2 = z1 + (Math.sin(Math.random() * angle * Math.PI / 180) * ((depth - 1) / depth) * length);
         var y2 = y1 + (0.5 * Math.random() * depth * length)
@@ -140,9 +209,10 @@
         var point2 = new THREE.Vector3(x2, y2, z2)
         var newdiam = diam * (depth - 1) / depth
         var branch = cylinderMesh(point2, point1, material, diam, newdiam)
-        scene.add(branch)
-        drawTree(x2, y2, z2, -1.0 * angle, depth - 1, length, newdiam, material);
-        drawTree(x2, y2, z2, 1.0 * angle, depth - 1, length, newdiam, material);
+        // var branch = lineMesh(point2, point1, material, diam, newdiam)
+        mygroup.add(branch)
+        await drawTree(x2, y2, z2, -1.0 * angle, depth - 1, length, newdiam, material, mygroup);
+        await drawTree(x2, y2, z2, 1.0 * angle, depth - 1, length, newdiam, material, mygroup);
       }
     }
 
@@ -158,34 +228,13 @@
             0, 0, 1, 0,
             0, -1, 0, 0,
             0, 0, 0, 1));
-        var edgeGeometry = new THREE.CylinderBufferGeometry(diam1, diam2, direction.length(), 4, 1);
+        var edgeGeometry = new THREE.CylinderBufferGeometry(diam1, diam2, direction.length(), 3, 1);
         var edge = new THREE.Mesh(edgeGeometry, material);
         edge.applyMatrix4(orientation);
         // position based on midpoints - there may be a better solution than this
         edge.position.x = (pointY.x + point1.x) / 2;
         edge.position.y = (pointY.y + point1.y) / 2;
         edge.position.z = (pointY.z + point1.z) / 2;
-        return edge;
-    }
-
-    function lineMesh(point1, pointY, material, diam1, diam2) {
-        // var direction = new THREE.Vector3().subVectors(pointY, point1);
-        // var orientation = new THREE.Matrix4();
-        // orientation.lookAt(point1, pointY, new THREE.Object3D().up);
-        // orientation.multiply(new THREE.Matrix4().set(1, 0, 0, 0,
-        //     0, 0, 1, 0,
-        //     0, -1, 0, 0,
-        //     0, 0, 0, 1));
-        var points = []
-        points.push(point1)
-        points.push(point2)
-        var edgeGeometry = new THREE.BufferGeometry().setFromPoints( points );
-        var edge = new THREE.Line(edgeGeometry, material);
-        // edge.applyMatrix4(orientation);
-        // position based on midpoints - there may be a better solution than this
-        // edge.position.x = (pointY.x + point1.x) / 2;
-        // edge.position.y = (pointY.y + point1.y) / 2;
-        // edge.position.z = (pointY.z + point1.z) / 2;
         return edge;
     }
 
@@ -213,13 +262,13 @@
     }
 
     function animate() {
-        if (camera.position.y < 100 && stopcamera == false){
-            camera.position.y += 0.1
-            camera.position.x += 5
-        } else if (camera.position.y < 50) {
-            stopcamera == true;
-        }
-        camera.position.x = 50;
+        // if (camera.position.y < 100 && stopcamera == false){
+        //     camera.position.y += 0.1
+        //     camera.position.x += 5
+        // } else if (camera.position.y < 50) {
+        //     stopcamera == true;
+        // }
+        // camera.position.x = 50;
         requestAnimationFrame( animate );
         controls.update();
         renderer.render( scene, camera );

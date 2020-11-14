@@ -44,13 +44,13 @@ app.config['SECRET_KEY'] = 'origami'
 # define app routes
 @app.route('/', methods=['GET'])
 def landing():
-    return redirect(url_for('natalieholmes'))
+    return redirect(url_for('forest'))
 
 @app.route('/natalieholmes', methods=['GET'])
 def home():
     if request.method == 'GET':
         # render template
-        return render_template('site/holme.html')
+        return render_template('site/holmes.html')
 
 @app.route('/space', methods=['GET'])
 def space():

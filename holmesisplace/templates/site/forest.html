@@ -98,18 +98,18 @@
 
     async function growforest(){
         // for number of random trees
-        const nforests = 1;
+        const nforests = 2;
         // rough spacing of trees
         // for the sphere this needs to be at least 90
         const scale = 45;
         // number of trees
-        var ntrees = 3000;
+        var ntrees = 1000;
         // initial tree height
         var height = 6
         // initial tree diameter
         var diameter = 0.5
         // forest depth
-        const depth = 7;
+        const depth = 6;
         // outer radius of sphere
         var sphere_radius = 500;
         // add sphere
@@ -296,8 +296,8 @@
     }
 
     function animate() {
-        theforest.rotation.z += 0.005;
-        theforest.rotation.y += 0.002;
+        theforest.rotation.z += 0.002;
+        theforest.rotation.y += 0.001;
         requestAnimationFrame( animate );
         controls.update();
         renderer.render( scene, camera );

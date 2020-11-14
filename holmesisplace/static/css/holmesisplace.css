@@ -100,6 +100,16 @@ body {
     max-height: 100%;
 }
 
+.brand {
+    position: absolute;
+    left: 0%;
+    bottom: 0%;
+    padding: 30px;
+    z-index: 100;
+    font-family: Archivo;
+    font-size: 24px;
+}
+
 .content {
     scroll-behavior: smooth;
 }

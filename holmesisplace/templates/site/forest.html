@@ -49,6 +49,7 @@
     const stopcamera = false;
     const scene = new THREE.Scene();
     const theforest = new THREE.Group()
+    const thesun = new THREE.Group();
     // const axesHelper = new THREE.AxesHelper( 5 );
     // scene.add( axesHelper );
     scene.background = new THREE.Color( 0xffffff );
@@ -65,10 +66,10 @@
 
     function init() {
 
-        const camera = new THREE.PerspectiveCamera( 80, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 4000 );
-        camera.position.x = 700;
+        const camera = new THREE.PerspectiveCamera( 80, SCREEN_WIDTH / SCREEN_HEIGHT, 200, 6000 );
+        camera.position.x = 2000;
         camera.position.y = 0;
-        camera.position.z = 700;
+        camera.position.z = 2000;
         // camera.position.y = 50;
         // camera.position.x = 1000;
 
@@ -112,11 +113,32 @@
         const depth = 6;
         // outer radius of sphere
         var sphere_radius = 500;
-        // add sphere
-        const geometry = new THREE.SphereGeometry( sphere_radius, 100, 100 );
-        const sphere_material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
-        const globe = new THREE.Mesh( geometry, sphere_material );
+        // add globe
+        const globe_geom = new THREE.SphereGeometry( sphere_radius, 100, 100 );
+        // const globe_mat = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+        const globe_mat = new THREE.MeshLambertMaterial( {color: 0xffffff} );
+        const globe = new THREE.Mesh( globe_geom, globe_mat );
         scene.add( globe );
+        // add sun
+        const sun_geom = new THREE.SphereGeometry( sphere_radius / 8, 100, 100 );
+        const sun_mat = new THREE.MeshBasicMaterial( {color: 0xffd300} );
+        const sun = new THREE.Mesh( sun_geom, sun_mat );
+        sun.geometry.translate(0, 0, sphere_radius * 3);
+        sun.updateMatrix()
+        // sunlight!!
+        const sunlight = new THREE.DirectionalLight( 0xffffff, 1);
+        sunlight.castShadow = true
+        console.log(sun)
+        sunlight.applyMatrix4(sun.matrixWorld);
+        // set position so "top down" is pointing at the origin
+        sunlight.position.set( 0, 0, sphere_radius * 3 ).normalize();
+        // sunlight.updateMatrix();
+        sunlight.target = globe;
+        thesun.add( sunlight );
+        // save sun
+        thesun.position.set(0, 0, 0)
+        thesun.add( sun );
+        scene.add(thesun);
         // array of indexes of trees
         const treeidx = Array.apply(null, {length: ntrees * nforests}).map(Number.call, Number)
         // holder to make sure we don't grow a tree which already exists!
@@ -296,8 +318,13 @@
     }
 
     function animate() {
+        // rotate forest / globe
         theforest.rotation.z += 0.002;
         theforest.rotation.y += 0.001;
+        // rotate sun around origin
+        thesun.rotation.z += -0.002;
+        thesun.rotation.y += -0.001;
+        // animate
         requestAnimationFrame( animate );
         controls.update();
         renderer.render( scene, camera );

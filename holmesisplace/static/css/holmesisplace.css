@@ -34,6 +34,7 @@ body {
     margin: 0;
     top: 0;
     left: 0;
+    transition: .5s ease;
     /* overflow-x: hidden; */
 }
 
@@ -56,7 +57,7 @@ body {
 
 #spinnerbox {
     display: block;
-    z-index: 11;
+    z-index: 20;
     left: 45%;
     top: 45%;
 }
@@ -106,7 +107,7 @@ body {
     bottom: 0%;
     padding: 30px;
     z-index: 100;
-    font-family: Archivo;
+    font-family: Tajawal;
     font-size: 24px;
 }
 

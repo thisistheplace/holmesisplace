@@ -4,8 +4,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock %}
 {% block content %}
-<canvas class="mycanvas" id="mycanvas">
-</canvas>
+<canvas class="mycanvas" id="mycanvas"></canvas>
 
 <script type='x-shader/x-vertex' id='vertexShader'>
     precision highp float;
@@ -16,10 +15,12 @@
     attribute vec4 quaternion;
 
     // function to apply quaternion to instanced geometry
+    // this rotates the position based on the instance quaternion
     vec3 applyQuaternionToVector( vec4 q, vec3 v ){
         return v + 2.0 * cross( q.xyz, cross( q.xyz, v ) + q.w * v );
     }
 
+    // main function run on GPU
     void main() {
       vec3 newposition = applyQuaternionToVector(quaternion, position);
       gl_Position = projectionMatrix * modelViewMatrix * vec4( offset + newposition, 1.0 );
@@ -65,29 +66,25 @@
     });
 
     function init() {
-
+        // define camera
         const camera = new THREE.PerspectiveCamera( 80, SCREEN_WIDTH / SCREEN_HEIGHT, 200, 6000 );
         camera.position.x = 2000;
         camera.position.y = 0;
         camera.position.z = 2000;
         // camera.position.y = 50;
         // camera.position.x = 1000;
-
         // define renderer
         const renderer = new THREE.WebGLRenderer( { antialias: true, canvas: mycanvas } );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
         document.body.appendChild( renderer.domElement );
-
         document.body.style.touchAction = 'none';
         // document.body.addEventListener( 'pointermove', onPointerMove, false );
         window.addEventListener( 'resize', onWindowResize, false );
-
         return [camera, renderer]
     }
 
     function createControls( camera, renderer) {
-
         // create orbiting controls
         var controls = new OrbitControls( camera, renderer.domElement );
         controls.rotateSpeed = 1.0;
@@ -99,7 +96,7 @@
 
     async function growforest(){
         // for number of random trees
-        const nforests = 2;
+        const nforests = 3;
         // rough spacing of trees
         // for the sphere this needs to be at least 90
         const scale = 45;
@@ -115,7 +112,6 @@
         var sphere_radius = 500;
         // add globe
         const globe_geom = new THREE.SphereGeometry( sphere_radius, 100, 100 );
-        // const globe_mat = new THREE.MeshBasicMaterial( {color: 0xffffff} );
         const globe_mat = new THREE.MeshLambertMaterial( {color: 0xffffff} );
         const globe = new THREE.Mesh( globe_geom, globe_mat );
         scene.add( globe );
@@ -127,8 +123,7 @@
         sun.updateMatrix()
         // sunlight!!
         const sunlight = new THREE.DirectionalLight( 0xffffff, 1);
-        sunlight.castShadow = true
-        console.log(sun)
+        sunlight.castShadow = true;
         sunlight.applyMatrix4(sun.matrixWorld);
         // set position so "top down" is pointing at the origin
         sunlight.position.set( 0, 0, sphere_radius * 3 ).normalize();
@@ -180,31 +175,41 @@
                 // store tree position that has been grown, i.e. the instance
                 growntree.push(randomtree)
                 // spherical positioning
-                var spherepos = new THREE.Spherical( sphere_radius, allx[randomtree], allz[randomtree] )
-                var spherecoords = new THREE.Vector3()
-                spherecoords.setFromSpherical(spherepos)
+                // but if i=0 then fix to y axis
+                if (i === 0){
+                    var spherecoords = new THREE.Vector3(0.0, sphere_radius, 0.0)
+                    var spherepos = new THREE.Spherical().setFromVector3(spherecoords)
+                } else {
+                    var spherepos = new THREE.Spherical( sphere_radius, allx[randomtree], allz[randomtree] )
+                    var spherecoords = new THREE.Vector3()
+                    spherecoords.setFromSpherical(spherepos)
+                };
                 // calculate angle betwen vertical vector and vector from center
                 // of sphere to base
                 // get unit vector to tree base on sphere
                 var unittree = new THREE.Vector3()
                 unittree.setFromSpherical(spherepos)
-                unittree.normalize()
                 // make quaternion defining rotation
                 var rot = new THREE.Quaternion();
-                rot.setFromUnitVectors(new THREE.Vector3(0, 1, 0), unittree)
+                // calculate from vertical y vector
+                rot.setFromUnitVectors(new THREE.Vector3(0, 1, 0), unittree.normalize())
+                rot.normalize()
                 // store in rotation matrix
-                quaternions[i * 3] = rot.x
-                quaternions[i * 3 + 1] = rot.y
-                quaternions[i * 3 + 2] = rot.z
-                quaternions[i * 3 + 3] = rot.w
+                quaternions[i * 4] = rot.x
+                quaternions[i * 4 + 1] = rot.y
+                quaternions[i * 4 + 2] = rot.z
+                quaternions[i * 4 + 3] = rot.w
                 // generate offset coordinates
                 offsets[i * 3] = spherecoords.x
                 offsets[i * 3 + 1] = spherecoords.y
                 offsets[i * 3 + 2] = spherecoords.z
+                // offsets[i * 3] = 0.0
+                // offsets[i * 3 + 1] = 0.0
+                // offsets[i * 3 + 2] = 0.0
             }
             // apply offsets to instanced geometry
             forest.setAttribute( 'offset', new THREE.InstancedBufferAttribute( offsets, 3 ) );
-            forest.setAttribute( 'quaternion', new THREE.InstancedBufferAttribute( quaternions, 3 ) );
+            forest.setAttribute( 'quaternion', new THREE.InstancedBufferAttribute( quaternions, 4 ) );
             // create forest mesh
             var forestmesh = await new THREE.Mesh(forest, mat);
             forestmesh.updateMatrix()
@@ -294,27 +299,12 @@
         return edge;
     }
 
-    // function onPointerMove( event ) {
-    //
-    //     if ( event.isPrimary === false ) return;
-    //
-    //     mouseY = event.clientY - windowHalfY;
-    //
-    // }
-
-    //
-
     function onWindowResize() {
-
         const aspect = window.innerWidth / window.innerHeight;
-
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
-
         renderer.setSize( window.innerWidth, window.innerHeight );
-
         controls.update();
-
     }
 
     function animate() {

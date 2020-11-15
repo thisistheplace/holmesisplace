@@ -2,6 +2,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="/static/css/holmesisplace.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tajawal">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/static/js/spin.js"></script>
     <link rel="stylesheet" href="/static/css/spin.css">
@@ -53,8 +54,8 @@
         };
         var spinner = new Spinner(opts).spin();
         target.appendChild(spinner.el);
-        // await sleep(100000)
-        // $("body").css('position', 'absolute')
+        // await sleep(10000000)
+        $("body").css('position', 'absolute')
         $("#loader").css('display', 'none')
     });
 

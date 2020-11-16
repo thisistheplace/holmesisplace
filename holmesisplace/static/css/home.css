@@ -90,7 +90,7 @@ html {
 }
 
 /* banner links */
-ul {
+ol {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -98,11 +98,12 @@ ul {
     background-color: black;
 }
 
+/* li {
+    float: left;
+} */
+
 li {
     float: left;
-}
-
-li a {
     display: block;
     color: white;
     text-align: center;
@@ -115,7 +116,7 @@ li a {
 }
 
 /* Change the link color to #111 (black) on hover */
-li a:hover:not(.active) {
+li hover:not(.active) {
   background-color: #111;
 }
 

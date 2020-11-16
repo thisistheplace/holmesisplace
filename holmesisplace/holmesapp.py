@@ -64,6 +64,12 @@ def forest():
         # render template
         return render_template('site/forest.html')
 
+@app.route('/snow', methods=['GET'])
+def snow():
+    if request.method == 'GET':
+        # render template
+        return render_template('site/snow.html')
+
 # if run as main then run app
 if __name__ == '__main__':
     # print info

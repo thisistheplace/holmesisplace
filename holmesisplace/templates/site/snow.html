@@ -89,7 +89,7 @@
     		// const x = Math.random() * 2000 - 1000;
     		// const y = Math.random() * 2000 - 1000;
     		// const z = Math.random() * 2000 - 1000;
-            const coords = toruspoint(torusradius, Math.random() * 1000, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI)
+            const coords = toruspoint(torusradius, 100, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI)
     		vertices.push( ...coords );
     	}
 
@@ -128,9 +128,9 @@
     };
 
     function toruspoint(ringrad, tuberad, ringang, tubeang){
-        const x = (ringrad + tuberad * Math.sin(ringang)) * Math.cos(tubeang)
-        const y = (ringrad + tuberad * Math.cos(ringang)) * Math.sin(tubeang)
-        const z = tuberad * Math.sin(ringang)
+        const x = (ringrad + tuberad * Math.sin(tubeang)) * Math.cos(ringang)
+        const y = (ringrad + tuberad * Math.cos(tubeang)) * Math.sin(ringang)
+        const z = tuberad * Math.sin(tubeang)
         return [x, y, z]
     }
 

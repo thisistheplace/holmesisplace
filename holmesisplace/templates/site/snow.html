@@ -6,6 +6,43 @@
 {% block content %}
 <canvas class="mycanvas" id="mycanvas"></canvas>
 
+<script type="x-shader/x-vertex" id="vertexshader">
+
+    attribute float size;
+    attribute vec3 customColor;
+
+    varying vec3 vColor;
+
+    void main() {
+
+        vColor = customColor;
+
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+        gl_PointSize = size * ( 300.0 / -mvPosition.z );
+
+        gl_Position = projectionMatrix * mvPosition;
+
+    }
+
+</script>
+
+<script type="x-shader/x-fragment" id="fragmentshader">
+
+    uniform vec3 color;
+    uniform sampler2D pointTexture;
+
+    varying vec3 vColor;
+
+    void main() {
+
+        gl_FragColor = vec4( color * vColor, 1.0 );
+        gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
+
+    }
+
+</script>
+
 <script type="module">
     import * as THREE from '/static/three/build/three.module.js';
     import { OrbitControls } from '/static/three/examples/jsm/controls/OrbitControls.js';
@@ -26,6 +63,7 @@
     const scene = new THREE.Scene();
     const theforest = new THREE.Group()
     const thesun = new THREE.Group();
+    const snow = new THREE.Group();
     const axesHelper = new THREE.AxesHelper( 5 );
     scene.add( axesHelper );
     scene.background = new THREE.Color( 0x000000 );
@@ -41,8 +79,23 @@
     });
 
     function init() {
+        const light = new THREE.DirectionalLight( 0xffffff, 10);
+        light.position.set( 500, 500, 500 );
+        light.castShadow = true;
+        scene.add( light );
+        const sphereSize = 100;
+        const pointLightHelper = new THREE.DirectionalLightHelper( light, sphereSize );
+        scene.add( pointLightHelper );
         // add fog to Scene
         scene.fog = new THREE.Fog( 0x000000, 0.0008, 2500 );
+        // add floor
+        const geometry = new THREE.PlaneGeometry( 10000, 10000, 32 );
+        geometry.translate(0.0, 0.0, 600.0);
+        const material = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+        const plane = new THREE.Mesh( geometry, material );
+        plane.rotation.x = Math.PI / 2
+        plane.receiveShadow = true;
+        scene.add( plane );
         // define camera
         const camera = new THREE.PerspectiveCamera( 80, SCREEN_WIDTH / SCREEN_HEIGHT, 200, 2000 );
         camera.position.x = 600;
@@ -65,9 +118,10 @@
         // create orbiting controls
         var controls = new OrbitControls( camera, renderer.domElement );
         controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 1.2;
-        controls.panSpeed = 0.8;
+        // controls.zoomSpeed = 1.2;
+        // controls.panSpeed = 0.8;
         controls.keys = [ 65, 83, 68 ];
+        controls.enablePan = false;
         controls.enableZoom = false;
         return controls
     }
@@ -75,6 +129,7 @@
     function makesnow(){
         // holder for randomly generated positions
         const geometry = new THREE.BufferGeometry();
+        // var geometry = new THREE.InstancedBufferGeometry();
     	const vertices = [];
 
         // load sprite texture
@@ -85,16 +140,32 @@
         const torusradius = 10000
 
         // generate random positions
-    	for ( let i = 0; i < 200000; i ++ ) {
+    	for ( let i = 0; i < 2000; i ++ ) {
     		// const x = Math.random() * 2000 - 1000;
     		// const y = Math.random() * 2000 - 1000;
     		// const z = Math.random() * 2000 - 1000;
-            const coords = toruspoint(torusradius, Math.random() * 1000, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI)
+            var randrad = Math.random() * (1000 + 1000) - 1000;
+            const coords = toruspoint(torusradius, randrad, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI)
     		vertices.push( ...coords );
     	}
 
         // add positions to buffer geometry
     	geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+
+        const material = new THREE.ShaderMaterial( {
+
+            uniforms: {
+                color: { value: new THREE.Color( 0xffffff ) },
+                pointTexture: { value: new THREE.TextureLoader().load( "textures/sprites/spark1.png" ) }
+            },
+            vertexShader: document.getElementById( 'vertexshader' ).textContent,
+            fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+
+            blending: THREE.AdditiveBlending,
+            depthTest: false,
+            transparent: true
+
+        } );
 
         // parameters for different sprites
     	parameters = [
@@ -110,11 +181,13 @@
     		const color = parameters[ i ][ 0 ];
     		const sprite = parameters[ i ][ 1 ];
     		const size = parameters[ i ][ 2 ];
+            // create flake geometry
+            // var flakegeom = new THREE.
             // make a material
-    		materials[ i ] = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: false, transparent: false } );
-    		materials[ i ].color.setHSL( color[ 0 ], color[ 1 ], color[ 2 ] );
+    		// materials[ i ] = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: false, transparent: false } );
+    		// materials[ i ].color.setHSL( color[ 0 ], color[ 1 ], color[ 2 ] );
             // build geometry
-    		const particles = new THREE.Points( geometry, materials[ i ] );
+    		const particles = new THREE.Points( geometry, material );
             // rotate a bit
     		// particles.rotation.x = Math.random() * 6;
     		// particles.rotation.y = Math.random() * 6;
@@ -122,12 +195,17 @@
             particles.rotation.x = Math.PI;
             // adjust offset of ring
             particles.position.x = torusradius
-            // add to scene
-    		scene.add( particles );
+            // shadows
+            particles.castShadow = true;
+            // add to group
+    		snow.add( particles );
     	}
+        // add to Scene
+        scene.add(snow)
     };
 
     function toruspoint(ringrad, tuberad, ringang, tubeang){
+        // https://math.stackexchange.com/questions/2017079/uniform-random-points-on-a-torus
         const x = (ringrad + tuberad * Math.cos(tubeang)) * Math.cos(ringang)
         const y = (ringrad + tuberad * Math.cos(tubeang)) * Math.sin(ringang)
         const z = tuberad * Math.sin(tubeang)
@@ -146,8 +224,8 @@
         // get time update
         const time = Date.now() * 0.000002;
         // rotate different snow groups
-        for ( let i = 0; i < scene.children.length; i ++ ) {
-            const object = scene.children[ i ];
+        for ( let i = 0; i < snow.children.length; i ++ ) {
+            const object = snow.children[ i ];
             if ( object instanceof THREE.Points ) {
                 object.rotation.z = -1.0 * time * ( i < 4 ? i + 1 : - ( i + 1 ) );
             }

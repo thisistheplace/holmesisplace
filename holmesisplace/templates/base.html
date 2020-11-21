@@ -7,22 +7,35 @@
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script src="/static/js/spin.js"></script>
     <link rel="stylesheet" href="/static/css/spin.css">
+    <link href="//cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css" rel="stylesheet" type="text/css">
     {% block sources %}{% endblock %}
 </head>
 <body>
 <div class="loader" id="loader">
     <div id="spinnerbox"></div>
 </div>
-<div class="main" id="main">
-    <div class="headbox">
-        <div class="header">
-            <div class="logobox">
-                <img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png">
-            </div>
+<!-- <div class="headbox">
+    <div class="header">
+        <div class="logobox">
+            <img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png">
         </div>
     </div>
+</div> -->
+<div class="main" id="main">
     <div class="banner" id="banner">{% block banner %}{% endblock %}</div>
     <div class="content">{% block content %}{% endblock %}</div>
+    <div id="mc_embed_signup">
+        <form action="https://natalieholmes.us6.list-manage.com/subscribe/post?u=c12d00e434d3e209a9ac3fd7d&amp;id=3a91bf435b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+            <div id="mc_embed_signup_scroll">
+                <label for="mce-EMAIL">join the mailing list</label>
+                <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
+                <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_c12d00e434d3e209a9ac3fd7d_3a91bf435b" tabindex="-1" value=""></div>
+                <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+            </div>
+        </form>
+    </div>
+    <!--End mc_embed_signup-->
     <div class="socialbox">
         <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/be82b7a8-7fd0-4c22-9b78-8e43ec403980.png" class="socialicon" id="#facebook"></img>
         <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/5c883a1e-3d54-4a2a-9b90-4d7c156fa1c9.png" class="socialicon" id="#twitter"></img>
@@ -38,6 +51,10 @@
 </div>
 </body>
 <script type="text/javascript">
+    // $(document).ready(function(){
+    //     $("body").css('position', 'absolute')
+    //     $("#loader").css('display', 'none')
+    // })
     // run loading page until document is ready!
     $(document).ready(function(){
         // setup spinner immediately

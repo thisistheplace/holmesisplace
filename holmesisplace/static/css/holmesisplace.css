@@ -26,7 +26,7 @@ head {
 }
 
 body {
-    background-color: white;
+    background-color: #e8e8e8;
     width: 100%;
     height: 100%;
     position: fixed;
@@ -55,6 +55,18 @@ body {
     /* display: none; */
 }
 
+.home {
+    height: 100%;
+}
+
+#homeimage {
+    width: 100%;
+}
+
+#flowerimage {
+    width: 100%;
+}
+
 #spinnerbox {
     display: block;
     z-index: 2001;
@@ -63,7 +75,10 @@ body {
 }
 
 .headbox {
-    background-color: black;
+    background-color: #598f84;
+    opacity: 85%;
+    z-index: 1000;
+    position: absolute;
 }
 
 .header {
@@ -78,17 +93,20 @@ body {
     flex-direction: row;
     justify-content: center;
     width: 100%;
-    background-color: black;
+    background-color: #598f84;
     z-index: 1000;
+    opacity: 85%;
+    color: #e8e8e8;
 }
 
 .socialbox {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    background-color: black;
+    background-color: #f2bb4e;
     width: 100%;
     height: 70px;
+    color: #e8e8e8;
 }
 
 .logobox {
@@ -98,8 +116,11 @@ body {
 }
 
 .logo {
-    max-width: 70%;
+    max-width: 100%;
     max-height: 100%;
+    /* height: 40px; */
+    opacity: 100%;
+    color: #e8e8e8;
 }
 
 .brand {

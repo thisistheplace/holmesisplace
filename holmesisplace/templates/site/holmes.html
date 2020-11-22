@@ -10,13 +10,13 @@
 {% endblock %}
 {% block banner %}
 <ol>
-<li class="slidepage">about</li>
+    <li class="slidepage">about</li>
     <li class="slidehome" data-section='#videosection'>video</li>
     <li class="slidehome" data-section='#spotifysection'>music</li>
-    <li class="bannerlogo slidehome" data-section='#top'><img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png"></li>
+    <li class="bannerlogo" data-section='#top'><img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png"></li>
     <li class="slidepage">community</li>
     <li class="slidepage">library</li>
-    <li onclick="location.href='https://natalieholmes.bandcamp.com';">store</li>
+    <li class="slidehome" data-section="https://natalieholmes.bandcamp.com">store</li>
 </ol>
 {% endblock %}
 {% block content %}
@@ -146,8 +146,8 @@
             var section = $(this).data("section");
             // go to section
             window.location.href = section;
-       });
-       $(".slidepage").click(function(e){
+        });
+        $(".slidepage").click(function(e){
             e.preventDefault();
             slideIndex = $(this).index();
             // fudge to work with non clider headers
@@ -157,7 +157,25 @@
                 slideIndex += 7
             }
             $('.carousel').slick('slickGoTo', slideIndex, false);
-       });
+        });
+        // banner bar mouse highlighting
+        $(".slidepage").mouseenter(function(e){
+            e.preventDefault();
+            $(this).css('background-color', '#095f5f')
+        });
+        $(".slidepage").mouseout(function(e){
+            e.preventDefault();
+            $(this).css('background-color', '#598f84')
+        });
+        $(".slidehome").mouseenter(function(e){
+            e.preventDefault();
+            $(this).css('background-color', '#095f5f')
+        });
+        $(".slidehome").mouseout(function(e){
+            e.preventDefault();
+            $(this).css('background-color', '#598f84')
+        });
+       // grid for library page
         $('.grid').masonry({
           // options
           itemSelector: '.grid-item',

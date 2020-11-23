@@ -1,0 +1,261 @@
+{% extends "forest-base.html" %}
+{% block sources %}
+<link rel="stylesheet" href="/static/css/forest.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/underscore@1.11.0/underscore-min.js"></script>
+<script src="https://unpkg.com/earcut@2.2.2/dist/earcut.min.js"></script>
+{% endblock %}
+{% block content %}
+<canvas class="mycanvas" id="mycanvas"></canvas>
+
+<script type='x-shader/x-vertex' id='vertex-shader'>
+  /**
+  * The vertex shader's main() function must define `gl_Position`,
+  * which describes the position of each vertex in the space.
+  *
+  * To do so, we can use the following variables defined by Three.js:
+  *
+  *   uniform mat4 modelViewMatrix - combines:
+  *     model matrix: maps a point's local coordinate space into world space
+  *     view matrix: maps world space into camera space
+  *
+  *   uniform mat4 projectionMatrix - maps camera space into screen space
+  *
+  *   attribute vec3 position - sets the position of each vertex
+  *
+  *   attribute vec2 uv - determines the relationship between vertices and textures
+  *
+  * `uniforms` are constant across all vertices
+  *
+  * `attributes` can vary from vertex to vertex and are defined as arrays
+  * with length equal to the number of vertices. Each index in the array
+  * is an attribute for the corresponding vertex
+  *
+  * `varyings` are values passed from the vertex to the fragment shader
+  **/
+
+  varying vec2 vUv;
+  varying vec4 mvPosition;
+  uniform float scale;
+  uniform float size;
+  varying vec4 color;
+  uniform float uTime;
+  // varying float z1;
+  // varying float z2;
+  varying float xval;
+  varying float yval;
+  varying float zval;
+  varying vec3 sinePosition;
+  uniform float amp;
+  uniform float freq;
+
+  float sinewave(float xval, float zval, float offset, float amp, float freq){
+      // calculates z coordinate for two sine curves
+      float z1 = amp * sin((xval + offset)/freq);
+      float z2 = (amp * 0.1) * 2.0 * sin((zval - offset)/freq);
+      return z1 + z2;
+  }
+
+  void main() {
+    // vUv = position;
+    yval = sinewave(position.x, position.z, uTime, amp, freq);
+    sinePosition = vec3(position.x, yval, position.z);
+    // sinePosition.y = yval
+    mvPosition = modelViewMatrix * vec4( sinePosition, 1.0 );
+    gl_PointSize = size;
+    gl_PointSize *= 1. / - mvPosition.z ;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(sinePosition, 1.0);
+  }
+</script>
+
+<script type='x-shader/x-fragment' id='fragment-shader'>
+  /**
+  * The fragment shader's main() function must define `gl_FragColor`,
+  * which describes the pixel color of each pixel on the screen.
+  *
+  * To do so, we can use uniforms passed into the shader and varyings
+  * passed from the vertex shader
+  **/
+  varying vec4 color;
+
+  void main() {
+    // float r = 0.0, delta = 0.0, alpha = 1.0;
+    // vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+    // r = dot(cxy, cxy);
+    // if (r > 100.0) {
+    //   discard;
+    // }
+    // gl_FragColor = color * (alpha);
+  	gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+  }
+</script>
+
+<script type="module">
+    import * as THREE from '/static/three/build/three.module.js';
+    import { OrbitControls } from '/static/three/examples/jsm/controls/OrbitControls.js';
+    import { BufferGeometryUtils } from '/static/three/examples/jsm/utils/BufferGeometryUtils.js';
+    var canvas = document.getElementById('mycanvas');
+    const SCREEN_WIDTH = canvas.getBoundingClientRect().width;
+    const SCREEN_HEIGHT = canvas.getBoundingClientRect().height;
+
+    var r = 450;
+
+    let mouseY = 0,
+    windowHalfY = window.innerHeight / 2;
+
+    const stopcamera = false;
+    const scene = new THREE.Scene();
+    // const axesHelper = new THREE.AxesHelper( 5 );
+    // scene.add( axesHelper );
+    scene.background = new THREE.Color( 0xffa600 );
+    const sea = new THREE.Group()
+    var time = 0.0
+    const [camera, renderer] = init();
+    const controls = createControls(camera, renderer)
+    // configuration
+    const npoints = 2000
+    const spacing = 1
+    const size = 200.0
+    // sine curve geometry
+    const frequency = 20
+    const amplitude = 10
+    // define range of points
+    let range = n => [...Array(n).keys()]
+    const allx = range(npoints)
+    const allz = range(npoints)
+    // camera.up.set(0, 1, 0);
+    camera.lookAt(0, 0, 0);
+
+    $(document).ready(function() {
+        // make the sea of points
+        let thesea = makesea(npoints, spacing, size, frequency, amplitude);
+        // shift
+        thesea.position.x -= (npoints * spacing)
+        thesea.position.z -= (npoints * spacing)
+        // add to scene
+        scene.add(thesea);
+        // start animation
+        animate();
+    });
+
+    function init() {
+        // define camera
+        const camera = new THREE.PerspectiveCamera( 80, SCREEN_WIDTH / SCREEN_HEIGHT, 10, 2000 );
+        camera.position.x = 200;
+        camera.position.y = 0;
+        camera.position.z = 200;
+        // camera.position.y = 50;
+        // camera.position.x = 1000;
+        // define renderer
+        const renderer = new THREE.WebGLRenderer( { antialias: true, canvas: mycanvas } );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+        document.body.appendChild( renderer.domElement );
+        document.body.style.touchAction = 'none';
+        // document.body.addEventListener( 'pointermove', onPointerMove, false );
+        window.addEventListener( 'resize', onWindowResize, false );
+        return [camera, renderer]
+    }
+
+    function makesea(npoints, spacing, size, frequency, amplitude){
+        // load sprite texture
+    	const textureLoader = new THREE.TextureLoader();
+    	const sprite = textureLoader.load( 'static/img/ball.png' );
+        // makes an array of points on a plane
+        // holder for points geometry
+        const geometry = new THREE.BufferGeometry();
+        // make points
+        let vertices = []
+        for (let xpoint=0; xpoint<npoints; xpoint++){
+            for (let zpoint=0; zpoint<npoints; zpoint++){
+                // make a point
+                let xval = allx[xpoint] + spacing * xpoint
+                let zval = allz[zpoint] + spacing * zpoint
+                let yval = sinewave(xval, zval, 0.0, amplitude, frequency)
+                vertices.push(xval, yval, zval)
+            }
+        }
+        // // try earcut triangulation
+        // var triangles = earcut(vertices, null, 3)
+        // console.log(triangles)
+        // // add triangles to geometry
+        // geometry.setAttribute( 'triangles', new THREE.Float32BufferAttribute( triangles, 3 ) );
+        // geometry.setIndex(triangles)
+
+        // add positions to buffer geometry
+    	geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+        // create sea material
+        // let material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.NormalBlending, depthTest: false, transparent: false } );
+        // let material = new THREE.PointsMaterial( { size: size } );
+        // material.color.set( 0x0000ff )
+        let material = new THREE.ShaderMaterial({
+            transparent: true,
+            uniforms: {
+                size: {value: size},
+                scale: {value: 1},
+                // color: (1, 0, 0, 1),
+                color: {value: new THREE.Color( 0x0000ff )},
+                freq: {value: frequency},
+                amp: {value: amplitude},
+                uTime: {value: 0.0,}
+                // mytexture: {
+                //   type: 't',
+                //   value: sprite
+                // },
+            },
+            vertexShader: document.getElementById('vertex-shader').textContent,
+            fragmentShader: document.getElementById('fragment-shader').textContent
+        });
+        // create points
+        const particles = new THREE.Points( geometry, material );
+        // add to scene
+        sea.add(particles)
+        return sea
+    }
+
+    function sinewave(xval, zval, offset, amp, freq){
+        // calculates z coordinate for two sine curves
+        let z1 = amp * Math.sin((xval + offset)/freq);
+        let z2 = (amp * 0.1) * 2 * Math.sin((zval - offset)/freq);
+        return z1 + z2
+    }
+
+    function createControls( camera, renderer) {
+        // create orbiting controls
+        var controls = new OrbitControls( camera, renderer.domElement );
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.keys = [ 65, 83, 68 ];
+        return controls
+    }
+
+    function onWindowResize() {
+        const aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = aspect;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        controls.update();
+    }
+
+    function animate() {
+        // animate
+        requestAnimationFrame( animate );
+        controls.update();
+        // renderer.render( scene, camera );
+        render();
+    }
+
+    function render() {
+        // get sea points
+        let seapoints = sea.children[0]
+        // update time in material uniforms
+        seapoints.material.needsUpdate = true;
+        seapoints.material.uniforms.uTime.value = time;
+        // call renderer
+        renderer.render( scene, camera );
+        time += 0.5;
+    }
+
+</script>
+{% endblock %}

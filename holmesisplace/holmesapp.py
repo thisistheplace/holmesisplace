@@ -70,6 +70,12 @@ def snow():
         # render template
         return render_template('site/snow.html')
 
+@app.route('/sea', methods=['GET'])
+def sea():
+    if request.method == 'GET':
+        # render template
+        return render_template('site/sea.html')
+
 # if run as main then run app
 if __name__ == '__main__':
     # print info

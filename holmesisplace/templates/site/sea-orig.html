@@ -58,12 +58,14 @@
 
   void main() {
     // vUv = position;
+    // vUv = uv;
     yval = sinewave(position.x, position.z, uTime, amp, freq);
     sinePosition = vec3(position.x, yval, position.z);
     // sinePosition.y = yval
     mvPosition = modelViewMatrix * vec4( sinePosition, 1.0 );
     gl_PointSize = size;
     gl_PointSize *= 1. / - mvPosition.z ;
+    // gl_Position = projectionMatrix * modelViewMatrix * vec4(sinePosition, 1.0);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(sinePosition, 1.0);
   }
 </script>
@@ -105,15 +107,15 @@
 
     const stopcamera = false;
     const scene = new THREE.Scene();
-    const axesHelper = new THREE.AxesHelper( 5 );
-    scene.add( axesHelper );
+    // const axesHelper = new THREE.AxesHelper( 5 );
+    // scene.add( axesHelper );
     scene.background = new THREE.Color( 0xffa600 );
     const sea = new THREE.Group()
     var time = 0.0
     const [camera, renderer] = init();
     const controls = createControls(camera, renderer)
     // configuration
-    const npoints = 100
+    const npoints = 2000
     const spacing = 1
     const size = 200.0
     // sine curve geometry
@@ -144,10 +146,6 @@
         camera.position.x = 200;
         camera.position.y = 0;
         camera.position.z = 200;
-
-        const light = new THREE.HemisphereLight();
-        scene.add( light );
-
         // camera.position.y = 50;
         // camera.position.x = 1000;
         // define renderer
@@ -162,60 +160,38 @@
     }
 
     function makesea(npoints, spacing, size, frequency, amplitude){
+        // load sprite texture
+    	const textureLoader = new THREE.TextureLoader();
+    	const sprite = textureLoader.load( 'static/img/ball.png' );
         // makes an array of points on a plane
         // holder for points geometry
-        let geometry = new THREE.BufferGeometry();
-        // buffer holders
-        const vertices = []
-        const normals = []
-        const indices = []
-        const colors = []
+        const geometry = new THREE.BufferGeometry();
         // make points
+        let vertices = []
         for (let xpoint=0; xpoint<npoints; xpoint++){
             for (let zpoint=0; zpoint<npoints; zpoint++){
                 // make a point
                 let xval = allx[xpoint] + spacing * xpoint
                 let zval = allz[zpoint] + spacing * zpoint
-                // let yval = sinewave(xval, zval, 0.0, amplitude, frequency)
-                vertices.push(xval, 0.0, zval)
-                normals.push(0, 1, 0)
-
-                const r = ( xpoint / npoints ) + 0.5;
-                const g = ( zpoint / npoints ) + 0.5;
-
-                colors.push( r, g, 1 );
+                let yval = sinewave(xval, zval, 0.0, amplitude, frequency)
+                vertices.push(xval, yval, zval)
             }
         }
-
-        // generate indices (data for element array buffer)
-        for (let xpoint=0; xpoint<npoints; xpoint++){
-            for (let zpoint=0; zpoint<npoints; zpoint++){
-                // get vertices indexes which triangles form
-                const a = xpoint * ( npoints + 1 ) + ( zpoint + 1 );
-                const b = xpoint * ( npoints + 1 ) + zpoint;
-                const c = ( xpoint + 1 ) * ( npoints + 1 ) + zpoint;
-                const d = ( xpoint + 1 ) * ( npoints + 1 ) + ( zpoint + 1 );
-                // generate two faces (triangles) per iteration
-                indices.push( a, b, d ); // face one
-                indices.push( b, c, d ); // face two
-            }
-        }
-
-        // console.log(indices)
-        // console.log(vertices)
-        // console.log(normals)
-        // console.log(colors)
+        // // try earcut triangulation
+        // var triangles = earcut(vertices, null, 3)
+        // console.log(triangles)
+        // // add triangles to geometry
+        // geometry.setAttribute( 'triangles', new THREE.Float32BufferAttribute( triangles, 3 ) );
+        // geometry.setIndex(triangles)
 
         // add positions to buffer geometry
-        geometry.setIndex( indices );
     	geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-        geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
         // create sea material
+        // let material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.NormalBlending, depthTest: false, transparent: false } );
+        // let material = new THREE.PointsMaterial( { size: size } );
+        // material.color.set( 0x0000ff )
         let material = new THREE.ShaderMaterial({
             transparent: true,
-            side: THREE.DoubleSide,
             uniforms: {
                 size: {value: size},
                 scale: {value: 1},
@@ -232,18 +208,8 @@
             vertexShader: document.getElementById('vertex-shader').textContent,
             fragmentShader: document.getElementById('fragment-shader').textContent
         });
-
-
-        geometry = new THREE.PlaneBufferGeometry( npoints * npoints, npoints * npoints, npoints, npoints );
-        geometry.rotateX(- Math.PI / 2.0)
-        // const material = new THREE.MeshNormalMaterial();
-		// const material = new THREE.MeshPhongMaterial( {
-		// 	side: THREE.DoubleSide,
-		// 	vertexColors: true
-		// } );
-
         // create points
-        const particles = new THREE.Mesh( geometry, material );
+        const particles = new THREE.Points( geometry, material );
         // add to scene
         sea.add(particles)
         return sea
@@ -264,10 +230,6 @@
         controls.panSpeed = 0.8;
         controls.keys = [ 65, 83, 68 ];
         return controls
-    }
-
-    function disposeArray() {
-        this.array = null;
     }
 
     function onWindowResize() {

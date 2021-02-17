@@ -49,8 +49,8 @@ html {
     padding-right: 10px;
 }
 
-.sectionholder .videoimgs {
-    width: 720px;
+.mainvideo {
+    padding-top: 50px;
 }
 
 .spotifyholder > iframe {
@@ -58,7 +58,7 @@ html {
 }
 
 .videosection {
-    height: 700px;
+    height: 640px;
     background-color: #CDEADD;
 }
 
@@ -92,13 +92,28 @@ html {
   opacity: 0.4;
 }
 
+.comm-img {
+    width: 40vw;
+    -webkit-transition: opacity .5s ease-in-out;
+    transition: opacity .5s ease-in-out;
+    opacity: 1;
+}
+
+.comm-img:hover {
+  opacity: 0.4;
+}
+
 .videoimg:hover {
   opacity: 0.4;
 }
 
 .communitysection {
-    height: 400px;
+    height: 100%;
     background-color: rgba(246, 252, 188, 0.3);
+}
+
+.communityholder {
+    height: 74vh;
 }
 
 .librarysection {
@@ -153,4 +168,11 @@ blockquote {
     font-family: Verdana;
     width: 30%;
     color: #797676;
+}
+
+.about {
+    padding-top: 0px;
+    padding-bottom: 30px;
+    width: 90%;
+    text-align: justify;
 }

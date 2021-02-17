@@ -3,18 +3,18 @@ html {
 }
 
 /* width */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 5px;
-}
+} */
 /* Track */
-::-webkit-scrollbar-track {
+/* ::-webkit-scrollbar-track {
   background: #FA1301;
-}
+} */
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+/* ::-webkit-scrollbar-thumb {
   background: #F8E5E3;
-}
+} */
 
 /* Handle on hover */
 /* ::-webkit-scrollbar-thumb:hover {

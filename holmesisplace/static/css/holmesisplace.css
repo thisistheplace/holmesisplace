@@ -136,3 +136,15 @@ body {
 .content {
     scroll-behavior: smooth;
 }
+
+/* .footer {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 0.6em;
+  font-weight: 700;
+  color: darken($white, 15%);
+  float: right;
+
+  &:before {
+    content: '\2015';
+  }
+} */

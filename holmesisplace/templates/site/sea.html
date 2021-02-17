@@ -38,7 +38,6 @@
   varying vec4 mvPosition;
   uniform float scale;
   uniform float size;
-  varying vec4 color;
   uniform float uTime;
   // varying float z1;
   // varying float z2;
@@ -48,6 +47,8 @@
   varying vec3 sinePosition;
   uniform float amp;
   uniform float freq;
+  uniform vec3 bboxMin;
+  uniform vec3 bboxMax;
 
   float sinewave(float xval, float zval, float offset, float amp, float freq){
       // calculates z coordinate for two sine curves
@@ -57,9 +58,9 @@
   }
 
   void main() {
-    // vUv = position;
     yval = sinewave(position.x, position.z, uTime, amp, freq);
     sinePosition = vec3(position.x, yval, position.z);
+    vUv.y = (yval - bboxMin.y) / (bboxMax.y - bboxMin.y);
     // sinePosition.y = yval
     mvPosition = modelViewMatrix * vec4( sinePosition, 1.0 );
     gl_PointSize = size;
@@ -76,17 +77,16 @@
   * To do so, we can use uniforms passed into the shader and varyings
   * passed from the vertex shader
   **/
-  varying vec4 color;
+  // uniform vec3 color1;
+  // uniform vec3 color2;
+  varying vec2 vUv;
+
+  // vec3 color1 = vec3(0.5,0.5,0.9);
+  // vec3 color2 = vec3(1.000,0.833,0.224);
 
   void main() {
-    // float r = 0.0, delta = 0.0, alpha = 1.0;
-    // vec2 cxy = 2.0 * gl_PointCoord - 1.0;
-    // r = dot(cxy, cxy);
-    // if (r > 100.0) {
-    //   discard;
-    // }
-    // gl_FragColor = color * (alpha);
-  	gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+    gl_FragColor = vec4(1.0, 0.0, vUv.y, 1.0);
+  	// gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
   }
 </script>
 
@@ -212,15 +212,21 @@
         geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
         geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
+        geometry = new THREE.PlaneBufferGeometry( npoints * npoints, npoints * npoints, npoints, npoints );
+        geometry.rotateX(- Math.PI / 2.0)
+
         // create sea material
         let material = new THREE.ShaderMaterial({
-            transparent: true,
-            side: THREE.DoubleSide,
+            // transparent: true,
+            // side: THREE.DoubleSide,
             uniforms: {
                 size: {value: size},
                 scale: {value: 1},
                 // color: (1, 0, 0, 1),
-                color: {value: new THREE.Color( 0x0000ff )},
+                // color1: {value: new THREE.Color( 0x0000ff )},
+                // color2: {value: new THREE.Color( 0x000000 )},
+                bboxMin: {value: 0.0},
+                bboxMax: {value: 2 * amplitude},
                 freq: {value: frequency},
                 amp: {value: amplitude},
                 uTime: {value: 0.0,}
@@ -233,9 +239,6 @@
             fragmentShader: document.getElementById('fragment-shader').textContent
         });
 
-
-        geometry = new THREE.PlaneBufferGeometry( npoints * npoints, npoints * npoints, npoints, npoints );
-        geometry.rotateX(- Math.PI / 2.0)
         // const material = new THREE.MeshNormalMaterial();
 		// const material = new THREE.MeshPhongMaterial( {
 		// 	side: THREE.DoubleSide,

@@ -13,7 +13,7 @@
     <li class="slidepage static_page">about</li>
     <li class="slidehome static_home" data-section='#videosection'>video</li>
     <li class="slidehome static_home" data-section='#spotifysection'>music</li>
-    <li class="bannerlogo" data-section='#top'><img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png"></li>
+    <li class="bannerlogo slidehome" data-section='#top'><img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png"></li>
     <li class="slidepage static_page">community</li>
     <li class="slidepage static_page">library</li>
     <li class="slidehome static_home" data-section="https://natalieholmes.bandcamp.com">store</li>
@@ -32,12 +32,12 @@
 {% block content %}
 <div class="carousel">
     <div class="homelayout">
-        <div class="home">
+        <div class="home" id="#homesection">
             <img id="homeimage" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/9d51e87d-6949-4b9d-b09f-2844c4c97ae1.jpg"></img>
         </div>
         <div class="enter_the_hideout">
             <a href="https://www.patreon.com/natalieholmes">
-                <img src="/static/img/enter_the_hideout.png" class="hideout_img"></img>
+                <img src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/e6dd320e-6e3e-4dc9-a125-824e83872bf0.png" class="hideout_img"></img>
             </a>
         </div>
         <div class="videosection" id="videosection">
@@ -242,7 +242,20 @@
             e.preventDefault();
             $(this).css('color', '#262626')
         });
-       // grid for library page
+
+        ////////////////////
+        // Enter the hideout
+        ////////////////////
+        $(".enter_the_hideout").mouseenter(function(e){
+            e.preventDefault();
+            $(this).css('opacity', '65%');
+        });
+        $(".enter_the_hideout").mouseout(function(e){
+            e.preventDefault();
+            $(this).css('opacity', '85%');
+        });
+
+        // grid for library page
         $('.grid').masonry({
           // options
           itemSelector: '.grid-item',

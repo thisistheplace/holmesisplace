@@ -36,11 +36,12 @@ html {
     width: 10vw; */
     padding-right: 5vh;
     padding-top: 5vh;
+    opacity: 85%;
 }
 
 .hideout_img {
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
 }
 
 .sectionheader {
@@ -158,7 +159,7 @@ ol.static li {
     text-decoration: none;
     font-family: Verdana;
     font-size: 20px;
-    height: 80px;
+    /* height: 80px; */
 }
 
 /* ol.static li.bannerlogo {

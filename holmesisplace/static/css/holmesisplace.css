@@ -114,7 +114,7 @@ body {
     z-index: 1000;
     opacity: 0%;
     color: #e8e8e8;
-    transition: visibility 0s, opacity 0.5s linear;
+    transition: visibility 0s, opacity 0.5s ease;
 }
 
 .socialbox {

@@ -22,7 +22,8 @@
     </div>
 </div> -->
 <div class="main" id="main">
-    <div class="banner" id="banner">{% block banner %}{% endblock %}</div>
+    <div class="static_banner" id="#staticbanner">{% block static_banner %}{% endblock %}</div>
+    <div class="dynamic_banner" id="#dynamicbanner">{% block dynamic_banner %}{% endblock %}</div>
     <div class="content">{% block content %}{% endblock %}</div>
     <div id="mc_embed_signup">
         <form action="https://natalieholmes.us6.list-manage.com/subscribe/post?u=c12d00e434d3e209a9ac3fd7d&amp;id=3a91bf435b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
@@ -37,16 +38,36 @@
     </div>
     <!--End mc_embed_signup-->
     <div class="socialbox">
-        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/be82b7a8-7fd0-4c22-9b78-8e43ec403980.png" class="socialicon" id="#facebook"></img>
-        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/5c883a1e-3d54-4a2a-9b90-4d7c156fa1c9.png" class="socialicon" id="#twitter"></img>
-        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/041c3d45-4e7d-42ed-9c78-46cc156752bc.png" class="socialicon" id="#instagram"></img>
-        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/1494fe60-4709-4f6e-b261-04c452fb9dbc.png" class="socialicon" id="#youtube"></img>
-        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/3e229f84-bc3b-4667-8a21-9f7f1b2f1ee8.png" class="socialicon" id="#soundcloud"></img>
-        <img src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/10344728-df61-4459-824b-a69ea839ddb3.png" class="socialicon" id="#patreon"></img>
-        <img src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/ccb567ba-cb1b-49ac-af69-5a1b1281b377.png" class="socialicon" id="#twitch"></img>
-        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/2b00b720-807b-4c69-9eef-55dcf6ebc15a.png" class="socialicon" id="#spotify"></img>
-        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/62fb1615-9f6a-42bf-a8d0-765f3c6255be.png" class="socialicon" id="#apple"></img>
-        <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/9fbb34e5-61bf-4e7d-92ec-e26e5668aa8f.png" class="socialicon" id="#mail"></img>
+        <a href="https://www.facebook.com/natalieholmesmusic">
+            <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/be82b7a8-7fd0-4c22-9b78-8e43ec403980.png" class="socialicon" id="#facebook"></img>
+        </a>
+        <a href="https://twitter.com/_natalieholmes">
+            <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/5c883a1e-3d54-4a2a-9b90-4d7c156fa1c9.png" class="socialicon" id="#twitter"></img>
+        </a>
+        <a href="https://www.instagram.com/_natalieholmes">
+            <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/041c3d45-4e7d-42ed-9c78-46cc156752bc.png" class="socialicon" id="#instagram"></img>
+        </a>
+        <a href="https://www.youtube.com/natalieholmes">
+            <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/1494fe60-4709-4f6e-b261-04c452fb9dbc.png" class="socialicon" id="#youtube"></img>
+        </a>
+        <a href="https://soundcloud.com/natalieholmesmusic">
+            <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/3e229f84-bc3b-4667-8a21-9f7f1b2f1ee8.png" class="socialicon" id="#soundcloud"></img>
+        </a>
+        <a href="https://www.patreon.com/natalieholmes">
+            <img src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/10344728-df61-4459-824b-a69ea839ddb3.png" class="socialicon" id="#patreon"></img>
+        </a>
+        <a href="https://m.twitch.tv/natalieholmesmusic">
+            <img src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/ccb567ba-cb1b-49ac-af69-5a1b1281b377.png" class="socialicon" id="#twitch"></img>
+        </a>
+        <a href="https://open.spotify.com/artist/31dQ6lbXKJp9yLgUhb8qkJ?si=vF1miXVDRtKM2xgzYBa7Ug">
+            <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/2b00b720-807b-4c69-9eef-55dcf6ebc15a.png" class="socialicon" id="#spotify"></img>
+        </a>
+        <a href="https://music.apple.com/gb/artist/natalie-holmes/431707247">
+            <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/62fb1615-9f6a-42bf-a8d0-765f3c6255be.png" class="socialicon" id="#apple"></img>
+        </a>
+        <a href="mailto:hello.natalieholmes@gmail.com">
+            <img src="https://gallery.mailchimp.com/c12d00e434d3e209a9ac3fd7d/images/9fbb34e5-61bf-4e7d-92ec-e26e5668aa8f.png" class="socialicon" id="#mail"></img>
+        </a>
     </socialbox>
 </div>
 </body>
@@ -84,7 +105,6 @@
 
         // plant gif loader
 
-
         // wait for spotify to load
         window.onSpotifyWebPlaybackSDKReady = () => {
           // console.log("The Web Playback SDK is ready. We have access to Spotify.Player");
@@ -94,6 +114,39 @@
           $("body").css('position', 'absolute')
           $("#loader").css('display', 'none')
         };
+
+        // Mouse events on social links
+        $(".socialicon").mouseenter(function(e){
+            e.preventDefault();
+            // $(this).css('background-color', '#095f5f')
+            $(this).css('filter', 'grayscale(100%) invert(100%)');
+            $(this).css('filter', 'grayscale(100%) invert(100%)');
+        });
+        $(".socialicon").mouseout(function(e){
+            e.preventDefault();
+            // $(this).css('background-color', '#598f84')
+            $(this).css('filter', 'grayscale(0%) invert(0%)');
+            $(this).css('filter', 'grayscale(0%) invert(0%)');
+        });
+
+        // dynamic generation of scroll bar
+        window.onscroll = () => {
+            console.log('scrolling')
+            if (document.documentElement.scrollTop > 500) {
+                console.log('scrolling up')
+                $(".dynamic_banner").css('visibility', 'visible');
+                $(".dynamic_banner").css('opacity', '85%');
+                $(".dynamic_banner").css('display', 'flex');
+                $(".static_banner").css('display', 'none');
+            }
+            if (document.documentElement.scrollTop < 500) {
+                console.log('scrolling down')
+                $(".dynamic_banner").css('visibility', 'hidden');
+                $(".dynamic_banner").css('opacity', '0%');
+                $(".dynamic_banner").css('display', 'none');
+                $(".static_banner").css('display', 'flex');
+            }
+        }
     });
 </script>
 </html>

@@ -86,21 +86,40 @@ body {
     flex-direction: column;
 }
 
-.banner {
-    position: sticky;
+.static_banner {
+    position: absolute;
     top: 0;
     display: flex;
+    /* display: none; */
+    flex-direction: row;
+    justify-content: center;
+    height: 80px;
+    width: 100%;
+    z-index: 1000;
+    opacity: 85%;
+    color: #262626;
+    transition: .2s ease;
+}
+
+.dynamic_banner {
+    position: sticky;
+    top: 0;
+    /* display: flex; */
+    display: none;
+    visibility: hidden;
     flex-direction: row;
     justify-content: center;
     width: 100%;
     background-color: #598f84;
     z-index: 1000;
-    opacity: 85%;
+    opacity: 0%;
     color: #e8e8e8;
+    transition: visibility 0s, opacity 0.5s linear;
 }
 
 .socialbox {
     display: flex;
+    /* display: none; */
     flex-direction: row;
     justify-content: center;
     background-color: #f2bb4e;
@@ -117,20 +136,11 @@ body {
 
 .logo {
     max-width: 100%;
-    max-height: 100%;
-    /* height: 40px; */
+    height: 120px;
     opacity: 100%;
-    color: #e8e8e8;
-}
-
-.brand {
-    position: absolute;
-    left: 0%;
-    bottom: 0%;
-    padding: 30px;
-    z-index: 100;
-    font-family: Tajawal;
-    font-size: 24px;
+    color: #262626;
+    filter: grayscale(100%) invert(100%);
+    -webkit-filter: grayscale(100%) invert(100%);
 }
 
 .content {

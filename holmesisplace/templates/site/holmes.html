@@ -8,24 +8,38 @@
 <link rel="stylesheet" href="/static/css/slick-theme.css">
 <div id="top"></div>
 {% endblock %}
-{% block banner %}
-<ol>
-    <li class="slidepage">about</li>
-    <li class="slidehome" data-section='#videosection'>video</li>
-    <li class="slidehome" data-section='#spotifysection'>music</li>
+{% block static_banner %}
+<ol class="static">
+    <li class="slidepage static_page">about</li>
+    <li class="slidehome static_home" data-section='#videosection'>video</li>
+    <li class="slidehome static_home" data-section='#spotifysection'>music</li>
     <li class="bannerlogo" data-section='#top'><img class="logo" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b13fd288-49cc-4a77-a8df-63cd28b6d924.png"></li>
-    <li class="slidepage">community</li>
-    <li class="slidepage">library</li>
-    <li class="slidehome" data-section="https://natalieholmes.bandcamp.com">store</li>
+    <li class="slidepage static_page">community</li>
+    <li class="slidepage static_page">library</li>
+    <li class="slidehome static_home" data-section="https://natalieholmes.bandcamp.com">store</li>
+</ol>
+{% endblock %}
+{% block dynamic_banner %}
+<ol class="dynamic">
+    <li class="slidepage dynamic_page">about</li>
+    <li class="slidehome dynamic_home" data-section='#videosection'>video</li>
+    <li class="slidehome dynamic_home" data-section='#spotifysection'>music</li>
+    <li class="slidepage dynamic_page">community</li>
+    <li class="slidepage dynamic_page">library</li>
+    <li class="slidehome dynamic_home" data-section="https://natalieholmes.bandcamp.com">store</li>
 </ol>
 {% endblock %}
 {% block content %}
 <div class="carousel">
     <div class="homelayout">
         <div class="home">
-            <img id="homeimage" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/b7ed05fa-1f73-4350-bdb4-82dcb3950617.jpg"></img>
+            <img id="homeimage" src="https://mcusercontent.com/c12d00e434d3e209a9ac3fd7d/images/9d51e87d-6949-4b9d-b09f-2844c4c97ae1.jpg"></img>
         </div>
-            <!-- <div class="sectionheader">video</div> -->
+        <div class="enter_the_hideout">
+            <a href="https://www.patreon.com/natalieholmes">
+                <img src="/static/img/enter_the_hideout.png" class="hideout_img"></img>
+            </a>
+        </div>
         <div class="videosection" id="videosection">
             <div class="sectionholder">
                 <div class="mainvideo">
@@ -56,8 +70,12 @@
         <div class="communityholder">
         <div class="sectionheader">community</div>
         <div class="sectionholder">
-            <img class="comm-img" src="https://d4musicmarketing.com/wp-content/uploads/2020/04/patreon-for-musicians-header-min.jpg"></img>
-            <img class="comm-img" src="https://s3.amazonaws.com/quietus_production/images/articles/28650/bandcamp2018-988x416_1587480633_crop_550x232_1595525569.png"></img>
+            <a href="https://www.patreon.com/natalieholmes">
+                <img class="comm-img" src="https://d4musicmarketing.com/wp-content/uploads/2020/04/patreon-for-musicians-header-min.jpg"></img>
+            </a>
+            <a href="https://natalieholmes.bandcamp.com">
+                <img class="comm-img" src="https://s3.amazonaws.com/quietus_production/images/articles/28650/bandcamp2018-988x416_1587480633_crop_550x232_1595525569.png"></img>
+            </a>
         </div>
         </div>
     </div>
@@ -177,7 +195,7 @@
         $(".slidepage").click(function(e){
             e.preventDefault();
             slideIndex = $(this).index();
-            // fudge to work with non clider headers
+            // fudge to work with non slider headers
             if (slideIndex > 0){
                 slideIndex += 1
             } else {
@@ -186,21 +204,43 @@
             $('.carousel').slick('slickGoTo', slideIndex, false);
         });
         // banner bar mouse highlighting
-        $(".slidepage").mouseenter(function(e){
+        ////////////////////
+        // dynamic bar links
+        ////////////////////
+        $(".dynamic_page").mouseenter(function(e){
             e.preventDefault();
             $(this).css('background-color', '#095f5f')
         });
-        $(".slidepage").mouseout(function(e){
+        $(".dynamic_page").mouseout(function(e){
             e.preventDefault();
             $(this).css('background-color', '#598f84')
         });
-        $(".slidehome").mouseenter(function(e){
+        $(".dynamic_home").mouseenter(function(e){
             e.preventDefault();
             $(this).css('background-color', '#095f5f')
         });
-        $(".slidehome").mouseout(function(e){
+        $(".dynamic_home").mouseout(function(e){
             e.preventDefault();
             $(this).css('background-color', '#598f84')
+        });
+        ///////////////////
+        // static bar links
+        ///////////////////
+        $(".static_page").mouseenter(function(e){
+            e.preventDefault();
+            $(this).css('color', '#e8e8e8')
+        });
+        $(".static_page").mouseout(function(e){
+            e.preventDefault();
+            $(this).css('color', '#262626')
+        });
+        $(".static_home").mouseenter(function(e){
+            e.preventDefault();
+            $(this).css('color', '#e8e8e8')
+        });
+        $(".static_home").mouseout(function(e){
+            e.preventDefault();
+            $(this).css('color', '#262626')
         });
        // grid for library page
         $('.grid').masonry({

@@ -35,7 +35,7 @@ html {
     /* height: 10vh;
     width: 10vw; */
     padding-right: 5vh;
-    padding-top: 5vh;
+    padding-top: 140px;
     opacity: 85%;
 }
 
@@ -111,10 +111,11 @@ html {
 }
 
 .comm-img {
-    width: 40vw;
+    /* width: 40vw; */
     -webkit-transition: opacity .5s ease-in-out;
     transition: opacity .5s ease-in-out;
     opacity: 1;
+    height: 30vh;
 }
 
 .comm-img:hover {
@@ -131,7 +132,9 @@ html {
 }
 
 .communityholder {
-    height: 74vh;
+    height: 60vh;
+    padding-top: 150px;
+    background-color: rgba(246, 252, 188, 0.3);
 }
 
 .librarysection {
@@ -139,11 +142,13 @@ html {
     background-color: #e8e8e8;
 }
 
+.libraryholder {
+    padding-top: 150px;
+    background-color: #e8e8e8;
+}
+
 /* banner links */
 ol.static {
-    list-style-type: none;
-    margin: 0;
-    padding-top: 20px;
     color: #262626;
 }
 
@@ -154,12 +159,16 @@ ol.static li {
     text-align: center;
     padding-left: 14px;
     padding-right: 16px;
-    /* padding-top: 10px; */
+    padding-top: 60px;
     padding-bottom: 10px;
     text-decoration: none;
     font-family: Verdana;
     font-size: 20px;
     /* height: 80px; */
+}
+
+ol.static li.bannerlogo {
+    padding-top: 0px;
 }
 
 /* ol.static li.bannerlogo {
@@ -211,4 +220,8 @@ blockquote {
     padding-bottom: 30px;
     width: 90%;
     text-align: justify;
+}
+
+.aboutholder {
+    padding-top: 180px;
 }

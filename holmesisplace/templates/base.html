@@ -104,7 +104,8 @@
         // target.appendChild(spinner.el);
 
         // plant gif loader
-
+        $("body").css('position', 'absolute')
+        $("#loader").css('display', 'none')
         // wait for spotify to load
         window.onSpotifyWebPlaybackSDKReady = () => {
           // console.log("The Web Playback SDK is ready. We have access to Spotify.Player");

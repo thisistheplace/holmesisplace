@@ -2,7 +2,6 @@
 {% block sources %}
 <link rel="stylesheet" href="/static/css/home.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 <script src="/static/js/slick.min.js"></script>
 <link rel="stylesheet" href="/static/css/slick.css">
 <link rel="stylesheet" href="/static/css/slick-theme.css">
@@ -256,12 +255,12 @@
             $(this).css('opacity', '85%');
         });
 
-        // grid for library page
-        $('.grid').masonry({
-          // options
-          itemSelector: '.grid-item',
-          columnWidth: 200
-        });
+        // // grid for library page
+        // $('.grid').masonry({
+        //   // options
+        //   itemSelector: '.grid-item',
+        //   columnWidth: 200
+        // });
     });
 </script>
 {% endblock %}

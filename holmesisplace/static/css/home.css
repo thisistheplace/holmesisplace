@@ -76,8 +76,9 @@ html {
 }
 
 .videosection {
-    height: 640px;
+    /* height: 640px; */
     background-color: #CDEADD;
+    padding-bottom: 20px;
 }
 
 .videoimg {

@@ -100,8 +100,7 @@ body {
         /* display: none; */
         visibility: visible;
         flex-direction: column;
-        width: 100%;
-        min-height: 100%;
+        width: 50%;
         background-color: #598f84;
         z-index: 1000;
         opacity: 100%;

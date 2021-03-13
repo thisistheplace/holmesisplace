@@ -133,16 +133,13 @@
 
         // dynamic generation of scroll bar
         window.onscroll = () => {
-            console.log('scrolling')
             if (document.documentElement.scrollTop > 500) {
-                console.log('scrolling up')
                 $(".dynamic_banner").css('visibility', 'visible');
                 $(".dynamic_banner").css('opacity', '85%');
                 $(".dynamic_banner").css('display', 'flex');
                 $(".static_banner").css('display', 'none');
             }
             if (document.documentElement.scrollTop < 500) {
-                console.log('scrolling down')
                 $(".dynamic_banner").css('visibility', 'hidden');
                 $(".dynamic_banner").css('opacity', '0%');
                 $(".dynamic_banner").css('display', 'none');

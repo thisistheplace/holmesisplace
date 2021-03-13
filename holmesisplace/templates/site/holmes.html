@@ -29,6 +29,9 @@
 </ol>
 {% endblock %}
 {% block mobile_menu %}
+<div class="menu_button">
+    <img id="mobile_menu" src="/static/img/menu.png">
+</div>
 <ol class="mobile">
     <li class="slidepage dynamic_page">about</li>
     <li class="slidehome dynamic_home" data-section='#videosection'>video</li>
@@ -191,6 +194,20 @@
         $('#videoframe').attr('src', src)
     }
     $(document).ready(function(){
+        $(".menu_button").click(function(e){
+            e.preventDefault();
+            console.log($('ol.mobile').css('visibility'))
+            // toggle menu
+            if ($('ol.mobile').css('visibility', 'visible')) {
+                $('ol.mobile').hide()
+                // $('ol.mobile').css('visibility', 'hidden');
+                // $('ol.mobile').css('display', 'none');
+            } else {
+                $('ol.mobile').show()
+                // $('ol.mobile').css({'visibility':'visible !important'});
+                // $('ol.mobile').css('display', 'flex');
+            };
+        });
         $('.carousel').slick({
             adaptiveHeight: true,
             dots: false,

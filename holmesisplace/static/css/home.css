@@ -27,14 +27,16 @@ html {
 }
 
 @media screen and (min-width: 600px){
-.spotifydesktop {
-    visibility: visible;
+    .spotifydesktop {
+        visibility: visible;
+    }
 }
 
 @media screen and (max-width: 600px){
-.spotifydesktop {
-    display: none;
-    visibility: hidden;
+    .spotifydesktop {
+        display: none;
+        visibility: hidden;
+    }
 }
 
 .enter_the_hideout {

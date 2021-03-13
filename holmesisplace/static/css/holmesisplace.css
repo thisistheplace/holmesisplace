@@ -86,37 +86,77 @@ body {
     flex-direction: column;
 }
 
-.static_banner {
-    position: absolute;
-    top: 0;
-    display: flex;
-    /* display: none; */
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 130px;
-    width: 100%;
-    z-index: 1000;
-    opacity: 85%;
-    color: #262626;
-    transition: .2s ease;
-    overflow: hidden;
+@media screen and (min-width: 600px){
+    .mobile_menu {
+        display: none;
+    }
 }
 
-.dynamic_banner {
-    position: sticky;
-    top: 0;
-    /* display: flex; */
-    display: none;
-    visibility: hidden;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-    background-color: #598f84;
-    z-index: 1000;
-    opacity: 0%;
-    color: #e8e8e8;
-    transition: visibility 0s, opacity 0.5s ease;
+@media screen and (max-width: 600px){
+    .mobile_menu {
+        position: sticky;
+        top: 0;
+        display: flex;
+        /* display: none; */
+        visibility: visible;
+        flex-direction: column;
+        width: 100%;
+        min-height: 100%;
+        background-color: #598f84;
+        z-index: 1000;
+        opacity: 100%;
+        color: #e8e8e8;
+        transition: visibility 0s, opacity 0.5s ease;
+    }
+}
+
+@media screen and (min-width: 600px){
+    .static_banner {
+        position: absolute;
+        top: 0;
+        display: flex;
+        /* display: none; */
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        height: 130px;
+        width: 100%;
+        z-index: 1000;
+        opacity: 85%;
+        color: #262626;
+        transition: .2s ease;
+        overflow: hidden;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .static_banner {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 600px){
+    .dynamic_banner {
+        position: sticky;
+        top: 0;
+        /* display: flex; */
+        display: none;
+        visibility: hidden;
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+        background-color: #598f84;
+        z-index: 1000;
+        opacity: 0%;
+        color: #e8e8e8;
+        transition: visibility 0s, opacity 0.5s ease;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .dynamic_banner {
+        display: none;
+    }
 }
 
 .socialbox {

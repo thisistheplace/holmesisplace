@@ -205,6 +205,31 @@ ol.dynamic li {
     height: 32px;
 }
 
+ol.mobile {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #598f84;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+
+ol.mobile li {
+    float: left;
+    display: block;
+    color: #e8e8e8;
+    text-align: center;
+    padding-left: 14px;
+    padding-right: 16px;
+    padding-top: 10px;
+    text-decoration: none;
+    font-family: Verdana;
+    height: 32px;
+    justify-content: left;
+}
+
 blockquote {
     float: left;
     display: block;

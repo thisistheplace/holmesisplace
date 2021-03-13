@@ -28,6 +28,16 @@
     <li class="slidehome dynamic_home" data-section="https://natalieholmes.bandcamp.com">store</li>
 </ol>
 {% endblock %}
+{% block mobile_menu %}
+<ol class="mobile">
+    <li class="slidepage dynamic_page">about</li>
+    <li class="slidehome dynamic_home" data-section='#videosection'>video</li>
+    <li class="slidehome dynamic_home" data-section='#spotifysection'>music</li>
+    <li class="slidepage dynamic_page">community</li>
+    <li class="slidepage dynamic_page">library</li>
+    <li class="slidehome dynamic_home" data-section="https://natalieholmes.bandcamp.com">store</li>
+</ol>
+{% endblock %}
 {% block content %}
 <div class="carousel">
     <div class="homelayout">
@@ -42,12 +52,12 @@
         <div class="videosection" id="videosection">
             <div class="sectionholder">
                 <div class="mainvideo">
-                <iframe id="videoframe" min-width=80vw style="width:80vw;height:80vh" src="https://www.youtube-nocookie.com/embed/videoseries?list=PLitPfbAIiH0Tfa4NK64r6qnSqvFNE_Nvl" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe id="videoframe" min-width=80vw style="width:80vw;height:80vh" src="https://www.youtube-nocookie.com/embed/e4huiRiQ7Pc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
             <div class="sectionholder">
-                <img src="https://img.youtube.com/vi/DSdoNhJCoKc/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube.com/embed/videoseries?list=PLitPfbAIiH0Tfa4NK64r6qnSqvFNE_Nvl')"></img>
                 <img src="https://img.youtube.com/vi/e4huiRiQ7Pc/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube-nocookie.com/embed/e4huiRiQ7Pc')"></img>
+                <img src="https://img.youtube.com/vi/DSdoNhJCoKc/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube.com/embed/videoseries?list=PLitPfbAIiH0Tfa4NK64r6qnSqvFNE_Nvl')"></img>
                 <img src="https://img.youtube.com/vi/D3bN7fTOicg/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube-nocookie.com/embed/D3bN7fTOicg')"></img>
                 <img src="https://img.youtube.com/vi/SLaX_KIIh98/0.jpg" class="videoimg" onclick="updatevideo('https://www.youtube-nocookie.com/embed/SLaX_KIIh98')"></img>
             </div>
